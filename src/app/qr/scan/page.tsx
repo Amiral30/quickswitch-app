@@ -9,45 +9,74 @@ export default function QrScanner() {
   const [result, setResult] = useState('')
   const [error, setError] = useState('')
   const [useCamera, setUseCamera] = useState(false)
+  const [streamReady, setStreamReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
+  const rafRef = useRef<number | null>(null)
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      })
+      streamRef.current = stream
+      setStreamReady(true)
+    } catch (err) {
+      setError('Caméra non accessible: ' + (err as Error).message)
+      setUseCamera(false)
+    }
+  }
 
   useEffect(() => {
-    if (!useCamera) return
-    
-    navigator.mediaDevices.getUserMedia({ 
-      video: { facingMode: 'environment' } 
-    }).then(stream => {
-      streamRef.current = stream
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
+    if (!useCamera) {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop())
+        streamRef.current = null
       }
-    }).catch(err => {
-      setError('Caméra non accessible: ' + err.message)
-      setUseCamera(false)
-    })
+      setStreamReady(false)
+      return
+    }
+
+    startCamera()
 
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(t => t.stop())
       }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
+      }
     }
   }, [useCamera])
 
+  // Attach stream to video when both are ready
   useEffect(() => {
-    if (!useCamera || !videoRef.current) return
-    
-    const video = videoRef.current
-    const canvas = canvasRef.current
-    
-    const scanLoop = () => {
-      if (!video || !canvas || video.readyState < 2) return
+    if (streamReady && streamRef.current && videoRef.current) {
+      videoRef.current.srcObject = streamRef.current
+      videoRef.current.play()
+    }
+  }, [streamReady])
+
+  // Start scanning loop when video has stream
+  useEffect(() => {
+    if (!streamReady || !videoRef.current) return
+
+    const scan = () => {
+      const video = videoRef.current
+      const canvas = canvasRef.current
       
+      if (!video || !canvas) return
+
+      if (video.videoWidth === 0) {
+        rafRef.current = requestAnimationFrame(scan)
+        return
+      }
+
       const ctx = canvas.getContext('2d', { willReadFrequently: true })!
-      canvas.width = video.videoWidth || 640
-      canvas.height = video.videoHeight || 480
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      ctx.drawImage(video, 0, 0)
 
       try {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
@@ -55,19 +84,23 @@ export default function QrScanner() {
         
         if (code && !result) {
           setResult(code.data)
+          return
         }
       } catch (e) {
-        console.error('Scan error:', e)
+        // continue
       }
 
-      if (!result) {
-        requestAnimationFrame(scanLoop)
-      }
+      rafRef.current = requestAnimationFrame(scan)
     }
 
-    const timeout = setTimeout(scanLoop, 500)
-    return () => clearTimeout(timeout)
-  }, [useCamera, result])
+    rafRef.current = requestAnimationFrame(scan)
+
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
+      }
+    }
+  }, [streamReady, result])
 
   const handleFileUpload = () => {
     if (!file) return
@@ -138,8 +171,8 @@ export default function QrScanner() {
         ) : (
           <div className="mb-4">
             <video 
-              ref={videoRef} 
-              className="w-full rounded-lg"
+              ref={videoRef}
+              className="w-full h-64 rounded-lg object-cover bg-black"
               autoPlay 
               playsInline
               muted

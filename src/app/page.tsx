@@ -14,15 +14,15 @@ export default function Home() {
           100% sécurisé - Rien n'est uploadé sur nos serveurs
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-          <Link href="/convert/video/mp4-mp3" className="group">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          <Link href="/convert" className="group">
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
               <div className="text-3xl mb-3">🎵</div>
               <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">
-                Convertisseur Vidéo
+                Convertisseur de Fichiers
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                MP4 → MP3, AVI → MP4, etc.
+                Vidéo, Image, Document
               </p>
             </div>
           </Link>

@@ -9,10 +9,10 @@ export default function QrScanner() {
   const [result, setResult] = useState('')
   const [error, setError] = useState('')
   const [useCamera, setUseCamera] = useState(false)
-  const [cameraReady, setCameraReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
+  const animationRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (!useCamera) return
@@ -23,8 +23,11 @@ export default function QrScanner() {
       streamRef.current = stream
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        videoRef.current.play()
-        setCameraReady(true)
+        
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play()
+          startScanning()
+        }
       }
     }).catch(err => {
       setError('Caméra non accessible: ' + err.message)
@@ -35,42 +38,47 @@ export default function QrScanner() {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(t => t.stop())
       }
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
     }
   }, [useCamera])
 
-  useEffect(() => {
-    if (!cameraReady || !result) return
-    
-    const interval = setInterval(scanCamera, 200)
-    return () => clearInterval(interval)
-  }, [cameraReady])
+  const startScanning = () => {
+    const scan = () => {
+      if (!videoRef.current || !canvasRef.current) return
+      
+      const video = videoRef.current
+      const canvas = canvasRef.current
+      
+      if (video.videoWidth === 0) {
+        animationRef.current = requestAnimationFrame(scan)
+        return
+      }
 
-  const scanCamera = () => {
-    const video = videoRef.current
-    const canvas = canvasRef.current
-    if (!video || !canvas) return
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })!
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
-    const ctx = canvas.getContext('2d')!
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+      try {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const code = jsQR(imageData.data, imageData.width, imageData.height)
+        
+        if (code) {
+          setResult(code.data)
+          return
+        }
+      } catch (e) {
+        console.error('Scan error:', e)
+      }
 
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    const code = jsQR(imageData.data, imageData.width, imageData.height)
-    
-    if (code && !result) {
-      setResult(code.data)
-      stopCamera()
+      if (!result) {
+        animationRef.current = requestAnimationFrame(scan)
+      }
     }
-  }
-
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop())
-      streamRef.current = null
-    }
-    setUseCamera(false)
-    setCameraReady(false)
+    
+    scan()
   }
 
   const handleFileUpload = () => {
@@ -80,19 +88,24 @@ export default function QrScanner() {
     const img = new Image()
     img.onload = () => {
       const canvas = canvasRef.current!
-      const ctx = canvas.getContext('2d')!
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })!
       canvas.width = img.width
       canvas.height = img.height
       ctx.drawImage(img, 0, 0)
       
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-      const code = jsQR(imageData.data, imageData.width, imageData.height)
-      
-      if (code) {
-        setResult(code.data)
-      } else {
-        setError('Aucun QR code trouvé dans l\'image')
+      try {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const code = jsQR(imageData.data, imageData.width, imageData.height)
+        
+        if (code) {
+          setResult(code.data)
+        } else {
+          setError('Aucun QR code trouvé dans l\'image')
+        }
+      } catch (e) {
+        setError('Erreur de lecture: ' + (e as Error).message)
       }
+      
       URL.revokeObjectURL(imageUrl)
     }
     img.src = imageUrl
@@ -141,7 +154,11 @@ export default function QrScanner() {
               className="w-full rounded-lg"
               autoPlay 
               playsInline
+              muted
             />
+            <p className="text-xs text-center mt-2 text-gray-500">
+              Pointez un QR code à l'écran
+            </p>
           </div>
         )}
 
@@ -167,15 +184,6 @@ export default function QrScanner() {
             className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg disabled:opacity-50 hover:bg-blue-700 transition"
           >
             Scanner depuis fichier
-          </button>
-        )}
-
-        {useCamera && (
-          <button
-            onClick={stopCamera}
-            className="w-full py-2 px-3 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-          >
-            Arrêter la caméra
           </button>
         )}
       </div>

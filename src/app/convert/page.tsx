@@ -13,6 +13,7 @@ const converters = {
   ],
   document: [
     { from: 'pdf', to: 'jpg', label: 'PDF vers JPG', accept: 'application/pdf' },
+    { from: 'docx', to: 'pdf', label: 'DOCX vers PDF', accept: '.docx' },
   ]
 }
 

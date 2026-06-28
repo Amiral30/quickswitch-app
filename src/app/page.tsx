@@ -5,7 +5,7 @@ export default function Home() {
     <div className="flex flex-col flex-1 items-center justify-center bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="max-w-4xl mx-auto px-6 py-12 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-          QuickSwitch
+          Switchify
         </h1>
         <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
           Convertissez, compressez et générez des QR codes gratuitement

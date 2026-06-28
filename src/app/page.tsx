@@ -50,6 +50,18 @@ export default function Home() {
               </p>
             </div>
           </Link>
+
+          <Link href="/qr/scan" className="group">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="text-3xl mb-3">📷</div>
+              <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">
+                Scanner QR Code
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Lire un QR depuis une image
+              </p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

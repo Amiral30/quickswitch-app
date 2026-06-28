@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect } from 'react'
 import jsQR from 'jsqr'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function QrScanner() {
+  const router = useRouter()
   const [file, setFile] = useState<File | null>(null)
-  const [result, setResult] = useState('')
   const [error, setError] = useState('')
   const [useCamera, setUseCamera] = useState(false)
   const [streamReady, setStreamReady] = useState(false)
@@ -50,7 +51,6 @@ export default function QrScanner() {
     }
   }, [useCamera])
 
-  // Attach stream to video when both are ready
   useEffect(() => {
     if (streamReady && streamRef.current && videoRef.current) {
       videoRef.current.srcObject = streamRef.current
@@ -58,7 +58,6 @@ export default function QrScanner() {
     }
   }, [streamReady])
 
-  // Start scanning loop when video has stream
   useEffect(() => {
     if (!streamReady || !videoRef.current) return
 
@@ -82,8 +81,9 @@ export default function QrScanner() {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
         const code = jsQR(imageData.data, imageData.width, imageData.height)
         
-        if (code && !result) {
-          setResult(code.data)
+        if (code) {
+          const params = new URLSearchParams({ data: code.data })
+          router.push(`/qr/result?${params.toString()}`)
           return
         }
       } catch (e) {
@@ -100,7 +100,7 @@ export default function QrScanner() {
         cancelAnimationFrame(rafRef.current)
       }
     }
-  }, [streamReady, result])
+  }, [streamReady, router])
 
   const handleFileUpload = () => {
     if (!file) return
@@ -119,7 +119,12 @@ export default function QrScanner() {
         const code = jsQR(imageData.data, imageData.width, imageData.height)
         
         if (code) {
-          setResult(code.data)
+          const params = new URLSearchParams({
+            data: code.data,
+            url: imageUrl,
+            type: 'image'
+          })
+          router.push(`/qr/result?${params.toString()}`)
         } else {
           setError('Aucun QR code trouvé dans l\'image')
         }
@@ -184,13 +189,6 @@ export default function QrScanner() {
         )}
 
         <canvas ref={canvasRef} className="hidden" />
-
-        {result && (
-          <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded">
-            <label className="text-xs text-gray-500">Résultat :</label>
-            <p className="text-sm font-mono break-all">{result}</p>
-          </div>
-        )}
 
         {error && (
           <p className="text-red-500 text-sm mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded">

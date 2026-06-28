@@ -12,7 +12,6 @@ export default function QrScanner() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  const animationRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (!useCamera) return
@@ -23,11 +22,6 @@ export default function QrScanner() {
       streamRef.current = stream
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play()
-          startScanning()
-        }
       }
     }).catch(err => {
       setError('Caméra non accessible: ' + err.message)
@@ -38,48 +32,42 @@ export default function QrScanner() {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(t => t.stop())
       }
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
     }
   }, [useCamera])
 
-  const startScanning = () => {
-    const scan = () => {
-      if (!videoRef.current || !canvasRef.current) return
+  useEffect(() => {
+    if (!useCamera || !videoRef.current) return
+    
+    const video = videoRef.current
+    const canvas = canvasRef.current
+    
+    const scanLoop = () => {
+      if (!video || !canvas || video.readyState < 2) return
       
-      const video = videoRef.current
-      const canvas = canvasRef.current
-      
-      if (video.videoWidth === 0) {
-        animationRef.current = requestAnimationFrame(scan)
-        return
-      }
-
       const ctx = canvas.getContext('2d', { willReadFrequently: true })!
-      canvas.width = video.videoWidth
-      canvas.height = video.videoHeight
+      canvas.width = video.videoWidth || 640
+      canvas.height = video.videoHeight || 480
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
       try {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
         const code = jsQR(imageData.data, imageData.width, imageData.height)
         
-        if (code) {
+        if (code && !result) {
           setResult(code.data)
-          return
         }
       } catch (e) {
         console.error('Scan error:', e)
       }
 
       if (!result) {
-        animationRef.current = requestAnimationFrame(scan)
+        requestAnimationFrame(scanLoop)
       }
     }
-    
-    scan()
-  }
+
+    const timeout = setTimeout(scanLoop, 500)
+    return () => clearTimeout(timeout)
+  }, [useCamera, result])
 
   const handleFileUpload = () => {
     if (!file) return

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QuickSwitch - Convertisseur & Compresseur de Fichiers",
+  title: "Switchify - Convertisseur & Compresseur de Fichiers",
   description: "Convertissez, compressez et générez des QR codes gratuitement. 100% sécurisé, rien n'est uploadé sur nos serveurs.",
 };
 
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="fr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

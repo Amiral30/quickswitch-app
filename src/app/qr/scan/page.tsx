@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import jsQR from 'jsqr'
+import { saveToHistory } from '@/lib/history'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -11,6 +12,7 @@ export default function QrScanner() {
   const [error, setError] = useState('')
   const [useCamera, setUseCamera] = useState(false)
   const [streamReady, setStreamReady] = useState(false)
+  
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -23,8 +25,9 @@ export default function QrScanner() {
       })
       streamRef.current = stream
       setStreamReady(true)
+      setError('')
     } catch (err) {
-      setError('Caméra non accessible: ' + (err as Error).message)
+      setError('Caméra inaccessible. Veuillez vérifier les autorisations dans votre navigateur.')
       setUseCamera(false)
     }
   }
@@ -54,7 +57,7 @@ export default function QrScanner() {
   useEffect(() => {
     if (streamReady && streamRef.current && videoRef.current) {
       videoRef.current.srcObject = streamRef.current
-      videoRef.current.play()
+      videoRef.current.play().catch(e => console.error(e))
     }
   }, [streamReady])
 
@@ -82,12 +85,14 @@ export default function QrScanner() {
         const code = jsQR(imageData.data, imageData.width, imageData.height)
         
         if (code) {
+          // Log camera scan success
+          saveToHistory('Scanner QR', 'Scanner QR Code', 'Scanné via caméra', 'success')
           const params = new URLSearchParams({ data: code.data })
           router.push(`/qr/result?${params.toString()}`)
           return
         }
       } catch (e) {
-        // continue
+        // Continue scanning
       }
 
       rafRef.current = requestAnimationFrame(scan)
@@ -104,6 +109,7 @@ export default function QrScanner() {
 
   const handleFileUpload = () => {
     if (!file) return
+    setError('')
     
     const imageUrl = URL.createObjectURL(file)
     const img = new Image()
@@ -119,6 +125,8 @@ export default function QrScanner() {
         const code = jsQR(imageData.data, imageData.width, imageData.height)
         
         if (code) {
+          // Log file scan success
+          saveToHistory(file.name, 'Scanner QR Code', 'Scanné depuis fichier', 'success')
           const params = new URLSearchParams({
             data: code.data,
             url: imageUrl,
@@ -126,73 +134,120 @@ export default function QrScanner() {
           })
           router.push(`/qr/result?${params.toString()}`)
         } else {
-          setError('Aucun QR code trouvé dans l\'image')
+          setError("Aucun code QR détecté dans cette image. Assurez-vous d'importer une photo de bonne qualité.")
+          saveToHistory(file.name, 'Scanner QR Code', 'Échec scan (Aucun QR)', 'error')
         }
       } catch (e) {
-        setError('Erreur de lecture: ' + (e as Error).message)
+        setError('Erreur lors de la lecture du code.')
+        saveToHistory(file.name, 'Scanner QR Code', 'Erreur de scan', 'error')
       }
-      
-      URL.revokeObjectURL(imageUrl)
+    }
+    img.onerror = () => {
+      setError("Impossible d'importer l'image de code QR.")
     }
     img.src = imageUrl
   }
 
+  const ext = file?.name.split('.').pop()?.toUpperCase() || ''
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-gray-50 dark:bg-gray-900 min-h-screen px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm">
-        <Link href="/" className="text-sm text-blue-600 mb-4 inline-block">
-          ← Retour
-        </Link>
+    <div className="flex flex-col flex-1 items-center justify-center min-h-screen px-6 py-12">
+      <div className="max-w-md w-full glass-premium p-8 rounded-2xl shadow-xl flex flex-col gap-6">
         
-        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-          Scanner QR Code
-        </h1>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="inline-flex items-center gap-1 text-sm font-semibold text-teal-600 dark:text-teal-400 hover:underline">
+            ← Accueil
+          </Link>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400">
+            QR Code
+          </span>
+        </div>
+        
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Scanner un QR Code
+          </h1>
+          <p className="text-xs text-gray-500 mt-1">
+            Lisez instantanément les données en local via votre appareil photo ou un fichier.
+          </p>
+        </div>
 
         {!useCamera ? (
-          <div className="space-y-3 mb-4">
+          <div className="flex flex-col gap-4">
             <button
               onClick={() => setUseCamera(true)}
-              className="w-full py-2 px-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              className="w-full py-3.5 px-4 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-teal-500/10"
             >
-              📷 Utiliser la caméra
+              📷 Utiliser l'appareil photo/caméra
             </button>
 
-            <div className="relative">
+            <div className="relative my-2">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t border-gray-200/10"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">ou</span>
+              <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest">
+                <span className="px-2 text-gray-500 bg-transparent">ou</span>
               </div>
             </div>
 
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
-              className="w-full"
-            />
+            <div className="flex flex-col gap-3">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  setFile(e.target.files?.[0] || null)
+                  setError('')
+                }}
+                className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-500/15 file:text-teal-600 file:cursor-pointer hover:file:bg-teal-500/25"
+              />
+
+              {file && (
+                <div className="flex items-center gap-3 p-3.5 rounded-xl bg-gray-500/5 border border-gray-200/10">
+                  <div className="w-9 h-9 rounded-lg bg-teal-500/15 flex items-center justify-center text-teal-600 font-bold text-[10px]">
+                    {ext}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">
+                      {file.name}
+                    </p>
+                    <p className="text-[10px] text-gray-500">
+                      {(file.size / 1024).toFixed(0)} Ko
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
-          <div className="mb-4">
-            <video 
-              ref={videoRef}
-              className="w-full h-64 rounded-lg object-cover bg-black"
-              autoPlay 
-              playsInline
-              muted
-            />
-            <p className="text-xs text-center mt-2 text-gray-500">
-              Pointez un QR code à l'écran
-            </p>
+          <div className="flex flex-col gap-4">
+            <div className="relative rounded-2xl overflow-hidden shadow-inner border border-gray-200/10 bg-black">
+              <video 
+                ref={videoRef}
+                className="w-full h-64 object-cover"
+                autoPlay 
+                playsInline
+                muted
+              />
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+                {/* Focusing box element overlay */}
+                <div className="w-40 h-40 border-2 border-dashed border-white rounded-xl"></div>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setUseCamera(false)}
+              className="py-2.5 px-4 bg-gray-500/15 text-gray-700 dark:text-gray-300 font-semibold rounded-xl text-xs hover:bg-gray-500/25 duration-150 cursor-pointer"
+            >
+              Fermer la caméra
+            </button>
           </div>
         )}
 
         <canvas ref={canvasRef} className="hidden" />
 
         {error && (
-          <p className="text-red-500 text-sm mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded">
-            {error}
+          <p className="text-red-500 text-sm p-4 bg-red-500/10 border border-red-500/20 rounded-xl leading-relaxed">
+            ⚠️ {error}
           </p>
         )}
 
@@ -200,9 +255,9 @@ export default function QrScanner() {
           <button
             onClick={handleFileUpload}
             disabled={!file}
-            className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg disabled:opacity-50 hover:bg-blue-700 transition"
+            className="w-full py-3.5 px-4 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold rounded-xl disabled:opacity-40 hover:opacity-95 shadow-md shadow-teal-500/10 hover:scale-[1.01] duration-150 flex items-center justify-center gap-2 cursor-pointer bg-teal-600"
           >
-            Scanner depuis fichier
+            Décoder le QR Code
           </button>
         )}
       </div>

@@ -53,17 +53,17 @@ export default function Home() {
             <Image
               src="/logo.png"
               alt="e-swiftools logo clair"
-              width={140}
-              height={48}
-              className="h-10 w-auto object-contain duration-300 group-hover:scale-105 dark:hidden"
+              width={250}
+              height={84}
+              className="h-16 sm:h-20 w-auto object-contain duration-300 group-hover:scale-105 dark:hidden -ml-2 -mt-2 -mb-3"
               priority
             />
             <Image
               src="/nlogo.png"
               alt="e-swiftools logo sombre"
-              width={140}
-              height={48}
-              className="h-10 w-auto object-contain duration-300 group-hover:scale-105 hidden dark:block"
+              width={250}
+              height={84}
+              className="h-16 sm:h-20 w-auto object-contain duration-300 group-hover:scale-105 hidden dark:block -ml-2 -mt-2 -mb-3"
               priority
             />
           </Link>
@@ -275,16 +275,6 @@ export default function Home() {
           </section>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="w-full py-8 px-6 mt-16 glass border-t border-gray-200/10 text-center text-xs text-gray-500 leading-relaxed">
-        <p className="mb-2">
-          &copy; {new Date().getFullYear()} e-swiftools. Tous droits réservés.
-        </p>
-        <p className="max-w-md mx-auto">
-          Conformité RGPD garantie. Traitement 100% local par WebAssembly. Aucun fichier n'est conservé sur des serveurs externes.
-        </p>
-      </footer>
     </div>
   )
 }

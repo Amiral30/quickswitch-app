@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Switchify - Convertisseur & Compresseur de Fichiers",
+  title: "Swiftools - Convertisseur & Compresseur de Fichiers",
   description: "Convertissez, compressez et générez des QR codes gratuitement. 100% sécurisé, rien n'est uploadé sur nos serveurs.",
 };
 

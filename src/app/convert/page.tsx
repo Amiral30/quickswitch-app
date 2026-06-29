@@ -113,6 +113,13 @@ export default function ConvertPage() {
               Fichier : {file.name}
             </p>
 
+            <button
+              onClick={() => setStep(1)}
+              className="mb-4 text-sm text-blue-600 hover:underline"
+            >
+              Choisir un autre fichier
+            </button>
+
             <div className="mb-4">
               <label className="block text-sm font-medium mb-2">Format de sortie</label>
               <select

@@ -80,7 +80,8 @@ export default function ConvertPage() {
   }
 
   const category = file ? getCategory(file.name) : null
-  const outputFormats = category ? OUTPUT_FORMATS[category] : []
+  const inputExt = file?.name.split('.').pop()?.toLowerCase() || ''
+  const outputFormats = category ? OUTPUT_FORMATS[category].filter(fmt => fmt !== inputExt) : []
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-gray-50 dark:bg-gray-900 min-h-screen px-4">

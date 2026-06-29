@@ -7,6 +7,7 @@ import Link from 'next/link'
 
 const OUTPUT_FORMATS: Record<string, string[]> = {
   video: ['mp3', 'wav', 'ogg', 'mp4', 'mov', 'avi'],
+  audio: ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'],
   image: ['jpg', 'png', 'webp', 'gif', 'pdf'],
   document: ['pdf', 'txt', 'docx']
 }
@@ -14,6 +15,7 @@ const OUTPUT_FORMATS: Record<string, string[]> = {
 function getCategory(filename: string): keyof typeof OUTPUT_FORMATS | null {
   const ext = filename.split('.').pop()?.toLowerCase() || ''
   if (['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(ext)) return 'video'
+  if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'].includes(ext)) return 'audio'
   if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'].includes(ext)) return 'image'
   if (['pdf', 'doc', 'docx', 'txt'].includes(ext)) return 'document'
   return null
@@ -98,12 +100,13 @@ export default function ConvertPage() {
           <div>
             <input
               type="file"
+              accept="video/*,audio/*,image/*,.pdf,.doc,.docx"
               onChange={handleUpload}
               className="w-full p-4 border-2 border-dashed rounded-lg dark:bg-gray-700"
             />
-            <p className="text-xs text-gray-500 mt-4">
-              Formats supportés : MP4, MOV, AVI, PNG, JPG, WebP, PDF, DOCX
-            </p>
+<p className="text-xs text-gray-500 mt-4">
+               Formats supportés : MP4, MOV, AVI, MP3, WAV, OGG, PNG, JPG, WebP, PDF, DOCX
+             </p>
           </div>
         )}
 

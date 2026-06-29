@@ -65,7 +65,7 @@ export default function DocxToPdf() {
         </Link>
         
         <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-          DOCX vers PDF
+          Convertisseur DOCX en PDF
         </h1>
 
         <input

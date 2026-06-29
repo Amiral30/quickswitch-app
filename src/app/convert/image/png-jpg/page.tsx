@@ -42,7 +42,7 @@ export default function PngToJpg() {
         </Link>
         
         <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-          PNG vers JPG
+          Convertisseur PNG en JPG
         </h1>
 
         <input

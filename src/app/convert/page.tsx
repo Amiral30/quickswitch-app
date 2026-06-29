@@ -12,8 +12,6 @@ const converters = {
     { from: 'webp', to: 'jpg', label: 'WebP vers JPG', accept: 'image/webp' },
   ],
   document: [
-    { from: 'pdf', to: 'jpg', label: 'PDF vers JPG', accept: 'application/pdf' },
-    { from: 'pdf', to: 'text', label: 'PDF vers Texte', accept: 'application/pdf' },
     { from: 'docx', to: 'pdf', label: 'DOCX vers PDF', accept: '.docx' },
   ]
 }

@@ -66,9 +66,9 @@ export default function FfmpegConverter({ searchParams }: {
           ← Retour
         </Link>
         
-        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
-          {from.toUpperCase()} vers {to.toUpperCase()}
-        </h1>
+<h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+           Convertisseur {from.toUpperCase()} en {to.toUpperCase()}
+         </h1>
 
         <input
           type="file"

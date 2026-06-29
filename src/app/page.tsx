@@ -14,25 +14,12 @@ interface HistoryItem {
 }
 
 export default function Home() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [mounted, setMounted] = useState(false)
 
   // Initialize client elements
   useEffect(() => {
     setMounted(true)
-    // Setup Theme
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
-    const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    setTheme(initialTheme)
-    
-    if (initialTheme === 'dark') {
-      document.documentElement.classList.add('dark')
-      document.documentElement.setAttribute('data-theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      document.documentElement.setAttribute('data-theme', 'light')
-    }
 
     // Load History
     const loadHistory = () => {
@@ -47,19 +34,6 @@ export default function Home() {
     }
     loadHistory()
   }, [])
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(nextTheme)
-    localStorage.setItem('theme', nextTheme)
-    if (nextTheme === 'dark') {
-      document.documentElement.classList.add('dark')
-      document.documentElement.setAttribute('data-theme', 'dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      document.documentElement.setAttribute('data-theme', 'light')
-    }
-  }
 
   const clearHistory = () => {
     localStorage.removeItem('swiftools_history')
@@ -77,32 +51,24 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src={theme === 'dark' ? '/nlogo.png' : '/logo.png'}
-              alt="e-swiftools logo"
+              src="/logo.png"
+              alt="e-swiftools logo clair"
               width={140}
               height={48}
-              className="h-10 w-auto object-contain duration-300 group-hover:scale-105"
+              className="h-10 w-auto object-contain duration-300 group-hover:scale-105 dark:hidden"
+              priority
+            />
+            <Image
+              src="/nlogo.png"
+              alt="e-swiftools logo sombre"
+              width={140}
+              height={48}
+              className="h-10 w-auto object-contain duration-300 group-hover:scale-105 hidden dark:block"
               priority
             />
           </Link>
 
           <div className="flex items-center gap-4">
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="p-2.5 rounded-xl glass hover:bg-gray-200/30 dark:hover:bg-gray-800/40 transition-colors text-gray-700 dark:text-gray-300"
-              aria-label="Toggle Theme"
-            >
-              {theme === 'dark' ? (
-                <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14.5 12a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5 text-indigo-900" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
-            </button>
 
             {/* Premium CTA */}
             <button className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium text-sm hover:opacity-95 shadow-lg shadow-blue-500/20 hover:scale-[1.02] duration-150">

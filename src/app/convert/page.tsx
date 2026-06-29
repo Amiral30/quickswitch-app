@@ -10,6 +10,7 @@ const converters = {
     { from: 'png', to: 'jpg', label: 'PNG vers JPG', accept: 'image/png' },
     { from: 'jpg', to: 'png', label: 'JPG vers PNG', accept: 'image/jpeg' },
     { from: 'webp', to: 'jpg', label: 'WebP vers JPG', accept: 'image/webp' },
+    { from: 'img', to: 'pdf', label: 'Image vers PDF', accept: 'image/*' },
   ],
   document: [
     { from: 'docx', to: 'pdf', label: 'DOCX vers PDF', accept: '.docx' },

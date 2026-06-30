@@ -101,7 +101,7 @@ export default function CompressPDF() {
       const pdfBytes = await pdfDoc.save({ useObjectStreams: false })
       setProgress(95)
       
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+      const blob = new Blob([new Uint8Array(pdfBytes) as unknown as ArrayBuffer], { type: 'application/pdf' })
       const url = URL.createObjectURL(blob)
       const fname = `e-swiftools_comprime_${file.name}`
       

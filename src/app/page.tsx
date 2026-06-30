@@ -60,9 +60,9 @@ export default function Home() {
           {/* Logo */}
           <Link href="/" className="flex items-center group flex-shrink-0">
             <Image src="/logo.png" alt="e-swiftools" width={250} height={84}
-              className="h-14 w-auto object-contain duration-300 group-hover:scale-105 dark:hidden -ml-2 -mt-1 -mb-2" priority />
+              className="h-10 sm:h-14 w-auto object-contain duration-300 group-hover:scale-105 dark:hidden -ml-1 -mt-0.5 -mb-1" priority />
             <Image src="/nlogo.png" alt="e-swiftools" width={250} height={84}
-              className="h-14 w-auto object-contain duration-300 group-hover:scale-105 hidden dark:block -ml-2 -mt-1 -mb-2" priority />
+              className="h-10 sm:h-14 w-auto object-contain duration-300 group-hover:scale-105 hidden dark:block -ml-1 -mt-0.5 -mb-1" priority />
           </Link>
 
           {/* Nav Links — desktop only */}
@@ -98,6 +98,17 @@ export default function Home() {
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                     {tier === 'PRO' ? 'Crédits illimités' : `${limits.maxActions - actionsToday} / ${limits.maxActions} crédits`}
+                  </span>
+                </div>
+
+                {/* Badge mobile compact si Pro/Free */}
+                <div className="md:hidden flex items-center mr-1">
+                  <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full select-none ${
+                    tier === 'PRO' 
+                      ? 'bg-gradient-to-r from-amber-500 to-purple-600 text-white animate-pulse' 
+                      : 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
+                  }`}>
+                    {tier === 'PRO' ? '⚡ Premium' : `${limits.maxActions - actionsToday} c.`}
                   </span>
                 </div>
                 
@@ -168,15 +179,15 @@ export default function Home() {
               <>
                 <button
                   onClick={() => setIsAuthOpen(true)}
-                  className="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   Se connecter
                 </button>
                 <button
                   onClick={() => setIsAuthOpen(true)}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium text-sm hover:opacity-95 shadow-lg shadow-blue-500/20 hover:scale-[1.02] duration-150"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs sm:text-sm hover:opacity-95 shadow-lg shadow-blue-500/20 hover:scale-[1.02] duration-150"
                 >
-                  ⚡ e-swiftools Premium
+                  ⚡ <span className="hidden sm:inline">e-swiftools </span>Premium
                 </button>
               </>
             )}

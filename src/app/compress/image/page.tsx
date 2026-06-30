@@ -5,6 +5,7 @@ import { saveToHistory } from '@/lib/history'
 import Link from 'next/link'
 import { useQuota } from '@/hooks/useQuota'
 import AuthModal from '@/components/AuthModal'
+import AdInterstitial from '@/components/AdInterstitial'
 import { supabase } from '@/lib/supabase'
 
 export default function CompressImage() {
@@ -13,6 +14,9 @@ export default function CompressImage() {
   const [compressing, setCompressing] = useState(false)
   const [error, setError] = useState('')
   const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const [isInterstitialOpen, setIsInterstitialOpen] = useState(false)
+  const [resultUrl, setResultUrl] = useState<string | null>(null)
+  const [resultFilename, setResultFilename] = useState('')
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const { tier, hasQuota, recordAction, limits } = useQuota()
 
@@ -89,10 +93,10 @@ export default function CompressImage() {
             canvas.toBlob(
               (blob) => {
                 if (blob) {
-                  const a = document.createElement('a')
-                  a.href = URL.createObjectURL(blob)
-                  a.download = `compressed_${file.name}`
-                  a.click()
+                  const url = URL.createObjectURL(blob)
+                  const fname = `compressed_${file.name}`
+                  setResultUrl(url)
+                  setResultFilename(fname)
                   resolve()
                 } else {
                   reject(new Error("La compression Canvas a échoué."))
@@ -111,6 +115,8 @@ export default function CompressImage() {
       saveToHistory(file.name, 'Compresseur', `Qualité : ${(quality * 100).toFixed(0)}%`, 'success')
       recordAction()
       URL.revokeObjectURL(url)
+      // Ouvrir la modale de téléchargement (avec pub pour les Free Users)
+      setIsInterstitialOpen(true)
     } catch (err) {
       setError('Erreur lors de la compression de la photo.')
       console.error(err)
@@ -226,6 +232,16 @@ export default function CompressImage() {
       
       {/* Modale d'authentification intégrée */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      
+      {/* Modale publicitaire + téléchargement */}
+      <AdInterstitial
+        isOpen={isInterstitialOpen}
+        tier={tier}
+        filename={resultFilename}
+        blobUrl={resultUrl}
+        onClose={() => setIsInterstitialOpen(false)}
+        delaySeconds={4}
+      />
     </div>
   )
 }

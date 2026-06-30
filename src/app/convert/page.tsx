@@ -7,6 +7,7 @@ import { saveToHistory } from '@/lib/history'
 import Link from 'next/link'
 import { useQuota } from '@/hooks/useQuota'
 import AuthModal from '@/components/AuthModal'
+import AdInterstitial from '@/components/AdInterstitial'
 import { supabase } from '@/lib/supabase'
 
 const OUTPUT_FORMATS: Record<string, string[]> = {
@@ -33,6 +34,9 @@ export default function ConvertPage() {
   const [error, setError] = useState('')
   const [dragActive, setDragActive] = useState(false)
   const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const [isInterstitialOpen, setIsInterstitialOpen] = useState(false)
+  const [resultUrl, setResultUrl] = useState<string | null>(null)
+  const [resultFilename, setResultFilename] = useState('')
   const [userEmail, setUserEmail] = useState<string | null>(null)
 
   const { tier, hasQuota, recordAction, limits } = useQuota()
@@ -141,16 +145,18 @@ export default function ConvertPage() {
       
       const blob = new Blob([uint8], { type: mimeType })
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = file.name.replace(/\.[^.]+$/, `.${outputFormat}`)
-      a.click()
+      const fname = file.name.replace(/\.[^.]+$/, `.${outputFormat}`)
+      setResultUrl(url)
+      setResultFilename(fname)
 
       // Log success to local storage history
       saveToHistory(file.name, 'Convertisseur', `${ext.toUpperCase()} ➔ ${outputFormat.toUpperCase()}`, 'success')
       
-      // 4. Déduire un crédit du quota
+      // Déduire un crédit du quota
       recordAction()
+
+      // Ouvrir la modale (pub pour Free Users, instant pour Pro)
+      setIsInterstitialOpen(true)
       
     } catch (err) {
       setError('Erreur lors de la conversion. Le fichier est peut-être corrompu ou trop lourd.')
@@ -314,6 +320,16 @@ export default function ConvertPage() {
 
       {/* Modale d'authentification intégrée */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+
+      {/* Modale publicitaire + téléchargement */}
+      <AdInterstitial
+        isOpen={isInterstitialOpen}
+        tier={tier}
+        filename={resultFilename}
+        blobUrl={resultUrl}
+        onClose={() => setIsInterstitialOpen(false)}
+        delaySeconds={4}
+      />
     </div>
   )
 }

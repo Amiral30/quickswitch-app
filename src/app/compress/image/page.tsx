@@ -240,7 +240,7 @@ export default function CompressImage() {
         filename={resultFilename}
         blobUrl={resultUrl}
         onClose={() => setIsInterstitialOpen(false)}
-        delaySeconds={4}
+        delaySeconds={5}
       />
     </div>
   )

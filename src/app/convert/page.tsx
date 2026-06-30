@@ -328,7 +328,7 @@ export default function ConvertPage() {
         filename={resultFilename}
         blobUrl={resultUrl}
         onClose={() => setIsInterstitialOpen(false)}
-        delaySeconds={4}
+        delaySeconds={5}
       />
     </div>
   )

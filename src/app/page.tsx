@@ -352,6 +352,25 @@ export default function Home() {
             </div>
           </Link>
 
+          <Link href="/bg-remove" className="group lg:col-span-2 xl:col-span-1">
+            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(99,102,241,0.2)' } as React.CSSProperties}>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 border border-indigo-500/20 animate-pulse">MAGIQUE</span>
+                </div>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Détourage IA</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Supprimez le fond de n'importe quelle photo via notre IA 100% locale.</p>
+              </div>
+              <span className="text-xs font-semibold text-indigo-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+            </div>
+          </Link>
+
           <Link href="/qr/generate" className="group">
             <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(168,85,247,0.2)' } as React.CSSProperties}>
               <div className="flex flex-col gap-4">

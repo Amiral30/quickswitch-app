@@ -289,6 +289,24 @@ export default function Home() {
 
         {/* Tools Grid */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <Link href="/qr/scan" className="group">
+            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(20,184,166,0.2)' } as React.CSSProperties}>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 rounded-xl bg-teal-500/15 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m0 14v1m8-9h1m-16 0h1m3-6h8a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z" />
+                    </svg>
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/20">100% GRATUIT</span>
+                </div>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Scanner QR Code</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Lisez instantanément des codes QR par flux caméra ou en déposant une image.</p>
+              </div>
+              <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+            </div>
+          </Link>
+
           <Link href="/convert" className="group">
             <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(59,130,246,0.2)' } as React.CSSProperties}>
               <div className="flex flex-col gap-4">
@@ -334,21 +352,6 @@ export default function Home() {
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Générez des QR codes pour vos liens, configurations WiFi, emails ou fiches vCard.</p>
               </div>
               <span className="text-xs font-semibold text-purple-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
-
-          <Link href="/qr/scan" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(20,184,166,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-xl bg-teal-500/15 flex items-center justify-center text-teal-600 dark:text-teal-400">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m0 14v1m8-9h1m-16 0h1m3-6h8a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Scanner QR Code</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Lisez instantanément des codes QR par flux caméra ou en déposant une image.</p>
-              </div>
-              <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
             </div>
           </Link>
 

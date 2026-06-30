@@ -90,6 +90,23 @@ export default function Home() {
     }
   }
 
+  const handlePortal = async () => {
+    if (!userId || tier !== 'PRO') return
+    try {
+      const res = await fetch('/api/portal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch (err) {
+      console.error('Portal error:', err)
+    }
+  }
+
   if (!mounted) return null
 
   return (
@@ -197,12 +214,19 @@ export default function Home() {
                         </div>
 
                         <div className="flex flex-col gap-2">
-                          {tier !== 'PRO' && (
+                          {tier !== 'PRO' ? (
                             <button 
                               onClick={handleUpgrade}
                               className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs hover:opacity-95 shadow-md flex items-center justify-center gap-1.5 transition-all"
                             >
                               ⚡ Passer Premium (2,99€)
+                            </button>
+                          ) : (
+                            <button 
+                              onClick={handlePortal}
+                              className="w-full py-2 px-3 rounded-lg bg-gray-500/10 hover:bg-gray-500/20 text-gray-700 dark:text-gray-300 border border-gray-200/20 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                            >
+                              ⚙️ Gérer mon abonnement
                             </button>
                           )}
                           <button

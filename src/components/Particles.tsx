@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 
+import { useQuota } from '@/hooks/useQuota'
+
 interface Particle {
   x: number
   y: number
@@ -14,6 +16,7 @@ interface Particle {
 
 export default function Particles() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { tier } = useQuota()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -34,19 +37,21 @@ export default function Particles() {
       canvas.height = window.innerHeight
     }
 
-    const makeParticle = (): Particle => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      radius: Math.random() * 1.8 + 0.6,
-      opacity: Math.random() * 0.45 + 0.08,
-      hue: Math.random() * 80 + 195, // Blue → Purple spectrum
-    })
-
     const init = () => {
       particles.length = 0
-      for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(makeParticle())
+      const isPro = tier === 'PRO'
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          radius: Math.random() * 1.8 + 0.6,
+          opacity: Math.random() * 0.45 + 0.08,
+          // Si PRO : spectrum Or/Orange (30-55). Si normal : Bleu/Violet (195-275)
+          hue: Math.random() * (isPro ? 25 : 80) + (isPro ? 30 : 195),
+        })
+      }
     }
 
     const draw = () => {
@@ -138,7 +143,7 @@ export default function Particles() {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseleave', onMouseLeave)
     }
-  }, [])
+  }, [tier])
 
   return (
     <canvas

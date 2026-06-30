@@ -352,6 +352,21 @@ export default function Home() {
             </div>
           </Link>
 
+          <Link href="/compress/pdf" className="group">
+            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
+              <div className="flex flex-col gap-4">
+                <div className="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-500">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">PDF</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Réduisez le poids de vos documents PDF de manière sécurisée.</p>
+              </div>
+              <span className="text-xs font-semibold text-red-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+            </div>
+          </Link>
+
           <Link href="/bg-remove" className="group lg:col-span-2 xl:col-span-1">
             <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(99,102,241,0.2)' } as React.CSSProperties}>
               <div className="flex flex-col gap-4">

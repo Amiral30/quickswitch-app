@@ -9,6 +9,7 @@ const tools = [
   { label: 'Convertisseur de fichiers', href: '/convert' },
   { label: 'Compresseur d\'images', href: '/compress/image' },
   { label: 'Compresseur vidéo', href: '/compress/video' },
+  { label: 'Compresseur PDF', href: '/compress/pdf' },
   { label: 'Détourage Image IA', href: '/bg-remove' },
   { label: 'Créer un QR Code', href: '/qr/generate' },
   { label: 'Scanner un QR Code', href: '/qr/scan' },

@@ -1,9 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 import { saveToHistory } from '@/lib/history'
 import Link from 'next/link'
+import { useQuota } from '@/hooks/useQuota'
+import AuthModal from '@/components/AuthModal'
+import { supabase } from '@/lib/supabase'
 
 type QrType = 'text' | 'url' | 'email' | 'wifi' | 'vcard'
 
@@ -12,6 +15,20 @@ export default function QrGenerator() {
   const [fgColor, setFgColor] = useState('#000000')
   const [bgColor, setBgColor] = useState('#FFFFFF')
   const [size] = useState(256)
+
+  const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const { hasQuota, recordAction } = useQuota()
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }: any) => {
+      if (data.session) setUserEmail(data.session.user.email ?? null)
+    })
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+      setUserEmail(session?.user?.email ?? null)
+    })
+    return () => { authListener.subscription.unsubscribe() }
+  }, [])
 
   // Form states
   const [text, setText] = useState('')
@@ -147,6 +164,12 @@ export default function QrGenerator() {
   const qrValue = getQrValue()
 
   const handleDownload = () => {
+    // Validation du quota avant de permettre le téléchargement (Génération)
+    if (!hasQuota) {
+      setIsAuthOpen(true)
+      return
+    }
+
     const canvas = document.querySelector('canvas') as HTMLCanvasElement
     if (canvas) {
       const url = canvas.toDataURL('image/png')
@@ -157,6 +180,9 @@ export default function QrGenerator() {
       
       // Log successful QR Code generation
       saveToHistory(`qrcode_${qrType}.png`, 'Créer QR Code', `${qrType.toUpperCase()} ➔ QR Code`, 'success')
+      
+      // Déduire un crédit d'utilisation
+      recordAction()
     }
   }
 
@@ -259,6 +285,14 @@ export default function QrGenerator() {
           Télécharger le Code QR
         </button>
       </div>
+      
+      {/* Modale d'authentification intégrée */}
+      <AuthModal 
+        isOpen={isAuthOpen} 
+        onClose={() => setIsAuthOpen(false)} 
+        title="Générez plus de QR Codes" 
+        description={userEmail ? "Votre quota de QR Codes gratuits a été atteint pour aujourd'hui. Passez Premium !" : "Limite de génération atteinte. Connectez-vous vite pour débloquer plus de créations !"} 
+      />
     </div>
   )
 }

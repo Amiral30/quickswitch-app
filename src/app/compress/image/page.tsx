@@ -1,18 +1,64 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveToHistory } from '@/lib/history'
 import Link from 'next/link'
+import { useQuota } from '@/hooks/useQuota'
+import AuthModal from '@/components/AuthModal'
+import { supabase } from '@/lib/supabase'
 
 export default function CompressImage() {
   const [file, setFile] = useState<File | null>(null)
   const [quality, setQuality] = useState(0.8)
   const [compressing, setCompressing] = useState(false)
   const [error, setError] = useState('')
+  const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+  const { tier, hasQuota, recordAction, limits } = useQuota()
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }: any) => {
+      if (data.session) setUserEmail(data.session.user.email ?? null)
+    })
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+      setUserEmail(session?.user?.email ?? null)
+    })
+    return () => { authListener.subscription.unsubscribe() }
+  }, [])
+
+  const handleUpload = (selectedFile: File) => {
+    // Validation de la taille de fichier maximale
+    const fileSizeMB = selectedFile.size / 1024 / 1024
+    if (fileSizeMB > limits.maxFileSizeMB) {
+      if (!userEmail) {
+        setError(`Fichier trop lourd (${fileSizeMB.toFixed(1)} Mo). Les utilisateurs non-connectés sont limités à 1 Mo. Veuillez créer un compte gratuit pour compresser jusqu'à 10 Mo.`)
+        setIsAuthOpen(true)
+      } else if (tier === 'FREE') {
+        setError(`Fichier trop lourd (${fileSizeMB.toFixed(1)} Mo). Ce fichier dépasse la limite gratuite de 10 Mo. Passez à e-swiftools Pro pour lever toutes les limites.`)
+      } else {
+        setError(`Fichier trop lourd. Limite maximale de 4 Go dépassée.`)
+      }
+      return
+    }
+
+    setFile(selectedFile)
+    setError('')
+  }
 
   const handleCompress = async () => {
     if (!file) return
     
+    // Validation du quota quotidien au clic
+    if (!hasQuota) {
+      if (!userEmail) {
+        setError("Limite journalière de 2 actions atteinte. Créez un compte gratuit pour obtenir 10 actions quotidiennes !")
+      } else {
+        setError("Votre quota de 10 actions a été atteint. Revenez demain ou passez à e-swiftools Pro pour un accès illimité !")
+      }
+      setIsAuthOpen(true)
+      return
+    }
+
     setCompressing(true)
     setError('')
 
@@ -63,6 +109,7 @@ export default function CompressImage() {
       })
 
       saveToHistory(file.name, 'Compresseur', `Qualité : ${(quality * 100).toFixed(0)}%`, 'success')
+      recordAction()
       URL.revokeObjectURL(url)
     } catch (err) {
       setError('Erreur lors de la compression de la photo.')
@@ -102,8 +149,8 @@ export default function CompressImage() {
             type="file"
             accept="image/png,image/jpeg,image/jpg"
             onChange={(e) => {
-              setFile(e.target.files?.[0] || null)
-              setError('')
+              const selected = e.target.files?.[0]
+              if (selected) handleUpload(selected)
             }}
             className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-orange-500/15 file:text-orange-500 hover:file:bg-orange-500/25 file:cursor-pointer"
           />
@@ -176,6 +223,9 @@ export default function CompressImage() {
           </p>
         )}
       </div>
+      
+      {/* Modale d'authentification intégrée */}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   )
 }

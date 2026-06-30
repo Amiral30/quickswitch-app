@@ -24,15 +24,20 @@ export default function Home() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const { tier, limits, actionsToday, loading } = useQuota()
   const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
     setMounted(true)
 
     supabase.auth.getSession().then(({ data }: any) => {
-      if (data.session) setUserEmail(data.session.user.email ?? null)
+      if (data.session) {
+        setUserEmail(data.session.user.email ?? null)
+        setUserId(data.session.user.id ?? null)
+      }
     })
     const { data: authListener } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
       setUserEmail(session?.user?.email ?? null)
+      setUserId(session?.user?.id ?? null)
     })
 
     const stored = localStorage.getItem('swiftools_history')
@@ -46,6 +51,26 @@ export default function Home() {
   const clearHistory = () => {
     localStorage.removeItem('swiftools_history')
     setHistory([])
+  }
+
+  const handleUpgrade = async () => {
+    if (!userId || !userEmail) {
+      setIsAuthOpen(true)
+      return
+    }
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, userEmail }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch (err) {
+      console.error('Checkout error:', err)
+    }
   }
 
   if (!mounted) return null
@@ -156,7 +181,10 @@ export default function Home() {
 
                         <div className="flex flex-col gap-2">
                           {tier !== 'PRO' && (
-                            <button className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs hover:opacity-95 shadow-md flex items-center justify-center gap-1.5 transition-all">
+                            <button 
+                              onClick={handleUpgrade}
+                              className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs hover:opacity-95 shadow-md flex items-center justify-center gap-1.5 transition-all"
+                            >
                               ⚡ Passer Premium (2,99€)
                             </button>
                           )}
@@ -184,7 +212,7 @@ export default function Home() {
                   Se connecter
                 </button>
                 <button
-                  onClick={() => setIsAuthOpen(true)}
+                  onClick={handleUpgrade}
                   className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs sm:text-sm hover:opacity-95 shadow-lg shadow-blue-500/20 hover:scale-[1.02] duration-150"
                 >
                   ⚡ <span className="hidden sm:inline">e-swiftools </span>Premium
@@ -397,7 +425,10 @@ export default function Home() {
                 Sans publicités
               </li>
             </ul>
-            <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl text-sm hover:opacity-95 shadow-md shadow-blue-500/10 hover:scale-[1.01] duration-150">
+            <button 
+              onClick={handleUpgrade}
+              className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl text-sm hover:opacity-95 shadow-md shadow-blue-500/10 hover:scale-[1.01] duration-150"
+            >
               Accéder au forfait Pro (2,99€/mois)
             </button>
           </section>

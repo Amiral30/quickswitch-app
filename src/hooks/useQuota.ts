@@ -15,7 +15,7 @@ export interface QuotaLimits {
 const LIMITS: Record<Tier, QuotaLimits> = {
   ANON: { tier: 'ANON', maxActions: 2, maxFileSizeMB: 1, maxBatchSize: 1 },
   FREE: { tier: 'FREE', maxActions: 10, maxFileSizeMB: 10, maxBatchSize: 5 },
-  PRO: { tier: 'PRO', maxActions: 9999, maxFileSizeMB: 4000, maxBatchSize: 9999 },
+  PRO:  { tier: 'PRO', maxActions: 9999, maxFileSizeMB: 4000, maxBatchSize: 9999 },
 }
 
 export function useQuota() {
@@ -23,18 +23,39 @@ export function useQuota() {
   const [actionsToday, setActionsToday] = useState(0)
   const [loading, setLoading] = useState(true)
 
-  // Determine current tier from session
+  // Determine current tier from session + Supabase profiles table
   useEffect(() => {
+    const resolveTier = async (userId: string) => {
+      // Lire le tier depuis la table profiles dans Supabase
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('tier')
+        .eq('id', userId)
+        .single()
+
+      if (profile?.tier === 'PRO') {
+        setTier('PRO')
+      } else {
+        setTier('FREE')
+      }
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
-      // In the future, check user's Stripe status from DB.
-      // For now: No session = ANON, Session = FREE.
-      setTier(session ? 'FREE' : 'ANON')
+      if (session) {
+        resolveTier(session.user.id)
+      } else {
+        setTier('ANON')
+      }
       setLoading(false)
     })
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setTier(session ? 'FREE' : 'ANON')
+      (_event, session) => {
+        if (session) {
+          resolveTier(session.user.id)
+        } else {
+          setTier('ANON')
+        }
       }
     )
 
@@ -43,13 +64,11 @@ export function useQuota() {
     }
   }, [])
 
-  // Load today's action count from LocalStorage (based on current Tier / User)
+  // Load today's action count from LocalStorage
   useEffect(() => {
     if (loading) return
 
     const today = new Date().toISOString().split('T')[0]
-    // Prefix cache key by tier so switching Tier creates a new bucket,
-    // though usually you'd sync it to a real DB.
     const storageKey = `swiftools_quota_${tier}_${today}`
     
     const stored = localStorage.getItem(storageKey)

@@ -103,7 +103,7 @@ export default function TermsPage() {
           <Section title="Article 8 — Offre Pro (Abonnement Payant)">
             <p>E-Swiftools propose une offre payante <strong>«&nbsp;Pro&nbsp;»</strong> donnant accès à des fonctionnalités étendues (traitement de fichiers lourds, conversions par lot, etc.).</p>
             <div className="mt-4 p-4 rounded-xl bg-blue-500/8 border border-blue-500/20 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <p><strong>Prix :</strong> 4,99€ / mois (TTC), sans engagement.</p>
+              <p><strong>Prix :</strong> 2,99€ / mois (TTC), sans engagement.</p>
               <p><strong>Résiliation :</strong> À tout moment, depuis votre espace personnel, avec effet à la fin de la période en cours.</p>
               <p><strong>Remboursement :</strong> Conformément à la législation européenne, un droit de rétractation de 14 jours s'applique à compter de l'activation de l'abonnement.</p>
             </div>

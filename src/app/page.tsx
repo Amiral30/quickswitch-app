@@ -45,6 +45,23 @@ export default function Home() {
       try { setHistory(JSON.parse(stored)) } catch (e) { console.error(e) }
     }
 
+    // ── Validation instantanée du paiement Stripe ──
+    const searchParams = new URL(window.location.href).searchParams
+    if (searchParams.get('upgrade') === 'success' && searchParams.get('session_id')) {
+      fetch(`/api/verify-checkout?session_id=${searchParams.get('session_id')}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.tier === 'PRO') {
+            alert('🎉 Paiement réussi ! Vous êtes désormais un membre PRO.')
+            // Nettoyer l'URL
+            window.history.replaceState({}, '', '/')
+            // Recharger la page pour forcer useQuota à lire le nouveau Tier de Supabase
+            setTimeout(() => window.location.reload(), 1000)
+          }
+        })
+        .catch(console.error)
+    }
+
     return () => { authListener.subscription.unsubscribe() }
   }, [])
 

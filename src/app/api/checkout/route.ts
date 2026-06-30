@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${req.nextUrl.origin}?upgrade=success`,
+      success_url: `${req.nextUrl.origin}?upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.nextUrl.origin}?upgrade=cancel`,
       metadata: {
         supabase_uid: userId,

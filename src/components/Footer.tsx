@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useQuota } from '@/hooks/useQuota'
 
 const tools = [
   { label: 'Convertisseur de fichiers', href: '/convert' },
@@ -15,6 +18,7 @@ const legal = [
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const { tier } = useQuota()
 
   return (
     <footer className="relative z-10 w-full mt-8 md:mt-12 border-t border-gray-200 dark:border-white/8">
@@ -97,20 +101,40 @@ export default function Footer() {
 
           {/* Col 4 — Pro / CTA */}
           <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">
-              Passer à Pro
+            <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-2">
+              {tier === 'PRO' ? (
+                <span className="text-amber-500">Membre Pro</span>
+              ) : (
+                <span className="text-gray-400 dark:text-gray-500">Passer à Pro</span>
+              )}
             </h4>
-            <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 flex flex-col gap-3">
-              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                Conversion par lot, fichiers jusqu'à 4 Go, QR Code sans watermark.
-              </p>
-              <Link
-                href="#pro"
-                className="text-xs font-bold text-center py-2.5 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity shadow-md shadow-blue-500/20"
-              >
-                ⚡ Upgrade — 4,99€/mois
-              </Link>
-            </div>
+            
+            {tier === 'PRO' ? (
+              <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 flex flex-col gap-3">
+                <p className="text-xs text-gray-700 dark:text-gray-300 font-semibold leading-relaxed">
+                  Merci pour votre soutien ! Vous profitez d'une expérience illimitée et sans publicité.
+                </p>
+                <div className="text-xs font-bold text-center py-2.5 px-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg shadow-md flex items-center justify-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Statut Premium Actif
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 flex flex-col gap-3">
+                <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                  Conversion par lot, fichiers jusqu'à 4 Go, QR Code sans watermark.
+                </p>
+                <Link
+                  href="/#pricing"
+                  className="text-xs font-bold text-center py-2.5 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity shadow-md shadow-blue-500/20"
+                >
+                  ⚡ Upgrade — 2,99€/mois
+                </Link>
+              </div>
+            )}
+            
             <p className="text-[10px] text-gray-400 dark:text-gray-600 leading-relaxed">
               Vos fichiers restent sur votre appareil. Nous ne stockons, n'analysons ni ne transmettons aucune donnée.
             </p>

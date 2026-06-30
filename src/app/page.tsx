@@ -93,7 +93,7 @@ export default function Home() {
   if (!mounted) return null
 
   return (
-    <div className="flex flex-col min-h-screen bg-transparent">
+    <div className={`flex flex-col min-h-screen ${tier === 'PRO' ? 'bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5 dark:from-amber-500/5 dark:to-orange-500/5' : 'bg-transparent'}`}>
 
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 w-full glass-premium border-b border-gray-200/20 px-6 py-3">
@@ -413,42 +413,44 @@ export default function Home() {
               )}
             </section>
 
-            {/* Publicité sous l'historique */}
-            <AdBanner format="horizontal" />
+            {/* Publicité sous l'historique (Cachée pour les PRO) */}
+            {tier !== 'PRO' && <AdBanner format="horizontal" />}
           </div>
 
-          {/* Pro Card */}
-          <section id="pricing" className="glass-premium p-6 rounded-2xl bg-gradient-to-b from-blue-500/10 to-transparent border border-blue-500/20 flex flex-col gap-4">
-            <div className="text-xs uppercase tracking-widest font-black text-blue-500">OFFRE LIMITÉE</div>
-            <h3 className="text-xl font-extrabold text-gray-900 dark:text-white leading-tight">Passez à e-swiftools Pro</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-              Débloquez la conversion par lot, des fichiers jusqu'à 4 Go, le support prioritaire et la suppression des pubs.
-            </p>
-            <ul className="text-xs text-gray-600 dark:text-gray-400 flex flex-col gap-2 py-2">
-              <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                Fichiers lourds (&gt; 10 Mo)
-              </li>
-              <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                Conversion par lot (x10)
-              </li>
-              <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                QR Code sans watermark
-              </li>
-              <li className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                Sans publicités
-              </li>
-            </ul>
-            <button 
-              onClick={handleUpgrade}
-              className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl text-sm hover:opacity-95 shadow-md shadow-blue-500/10 hover:scale-[1.01] duration-150"
-            >
-              Accéder au forfait Pro (2,99€/mois)
-            </button>
-          </section>
+          {/* Pro Card (Cachée pour les PRO) */}
+          {tier !== 'PRO' && (
+            <section id="pricing" className="glass-premium p-6 rounded-2xl bg-gradient-to-b from-blue-500/10 to-transparent border border-blue-500/20 flex flex-col gap-4">
+              <div className="text-xs uppercase tracking-widest font-black text-blue-500">OFFRE LIMITÉE</div>
+              <h3 className="text-xl font-extrabold text-gray-900 dark:text-white leading-tight">Passez à e-swiftools Pro</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                Débloquez la conversion par lot, des fichiers jusqu'à 4 Go, le support prioritaire et la suppression des pubs.
+              </p>
+              <ul className="text-xs text-gray-600 dark:text-gray-400 flex flex-col gap-2 py-2">
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  Fichiers lourds (&gt; 10 Mo)
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  Conversion par lot (x10)
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  QR Code sans watermark
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  Sans publicités
+                </li>
+              </ul>
+              <button 
+                onClick={handleUpgrade}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl text-sm hover:opacity-95 shadow-md shadow-blue-500/10 hover:scale-[1.01] duration-150"
+              >
+                Accéder au forfait Pro (2,99€/mois)
+              </button>
+            </section>
+          )}
         </div>
 
         {/* ── Section: Comment ça marche ─────────────────────────────────── */}

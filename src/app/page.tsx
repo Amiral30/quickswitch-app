@@ -308,64 +308,69 @@ export default function Home() {
         {/* Dashboard — History + Pro Card */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-          {/* History */}
-          <section className="lg:col-span-2 glass-premium p-6 rounded-2xl flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                Historique Local Récent
-                <span className="text-xs bg-gray-500/10 text-gray-400 px-2 py-0.5 rounded-full font-normal">
-                  {history.length} actions
-                </span>
-              </h2>
-              {history.length > 0 && (
-                <button onClick={clearHistory} className="text-xs text-red-500 font-semibold hover:underline">
-                  Tout effacer
-                </button>
-              )}
-            </div>
+          {/* History Column (History + Ad below it) */}
+          <div className="lg:col-span-2 flex flex-col gap-6">
+            <section className="glass-premium p-6 rounded-2xl flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  Historique Local Récent
+                  <span className="text-xs bg-gray-500/10 text-gray-400 px-2 py-0.5 rounded-full font-normal">
+                    {history.length} actions
+                  </span>
+                </h2>
+                {history.length > 0 && (
+                  <button onClick={clearHistory} className="text-xs text-red-500 font-semibold hover:underline">
+                    Tout effacer
+                  </button>
+                )}
+              </div>
 
-            {history.length === 0 ? (
-              <div className="p-8 text-center text-gray-500 text-sm border-2 border-dashed border-gray-200/10 rounded-xl">
-                Vos conversions récentes s'afficheront ici. Rien n'est conservé hors de votre navigateur.
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200/10 text-gray-400 text-xs uppercase tracking-wider font-semibold">
-                      <th className="pb-3 pt-1">Fichier</th>
-                      <th className="pb-3 pt-1">Outil / Type</th>
-                      <th className="pb-3 pt-1">Détails</th>
-                      <th className="pb-3 pt-1 text-right">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-250/5">
-                    {history.map((item: HistoryItem) => (
-                      <tr key={item.id} className="text-gray-700 dark:text-gray-300">
-                        <td className="py-3 font-medium truncate max-w-[200px]">{item.filename}</td>
-                        <td className="py-3">
-                          <span className="inline-flex px-2 py-0.5 rounded text-xs font-semibold bg-gray-500/10 text-gray-600 dark:text-gray-300">
-                            {item.toolType}
-                          </span>
-                        </td>
-                        <td className="py-3 text-xs text-gray-500">{item.details}</td>
-                        <td className="py-3 text-right">
-                          <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
-                            item.status === 'success' ? 'bg-green-500/15 text-green-700 dark:text-green-400' : 'bg-red-500/15 text-red-700 dark:text-red-400'
-                          }`}>
-                            {item.status === 'success' ? 'Réussi' : 'Échoué'}
-                          </span>
-                        </td>
+              {history.length === 0 ? (
+                <div className="p-8 text-center text-gray-500 text-sm border-2 border-dashed border-gray-200/10 rounded-xl">
+                  Vos conversions récentes s'afficheront ici. Rien n'est conservé hors de votre navigateur.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200/10 text-gray-400 text-xs uppercase tracking-wider font-semibold">
+                        <th className="pb-3 pt-1">Fichier</th>
+                        <th className="pb-3 pt-1">Outil / Type</th>
+                        <th className="pb-3 pt-1">Détails</th>
+                        <th className="pb-3 pt-1 text-right">Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
+                    </thead>
+                    <tbody className="divide-y divide-gray-250/5">
+                      {history.map((item: HistoryItem) => (
+                        <tr key={item.id} className="text-gray-700 dark:text-gray-300">
+                          <td className="py-3 font-medium truncate max-w-[200px]">{item.filename}</td>
+                          <td className="py-3">
+                            <span className="inline-flex px-2 py-0.5 rounded text-xs font-semibold bg-gray-500/10 text-gray-600 dark:text-gray-300">
+                              {item.toolType}
+                            </span>
+                          </td>
+                          <td className="py-3 text-xs text-gray-500">{item.details}</td>
+                          <td className="py-3 text-right">
+                            <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
+                              item.status === 'success' ? 'bg-green-500/15 text-green-700 dark:text-green-400' : 'bg-red-500/15 text-red-700 dark:text-red-400'
+                            }`}>
+                              {item.status === 'success' ? 'Réussi' : 'Échoué'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+
+            {/* Publicité sous l'historique */}
+            <AdBanner format="horizontal" />
+          </div>
 
           {/* Pro Card */}
           <section id="pricing" className="glass-premium p-6 rounded-2xl bg-gradient-to-b from-blue-500/10 to-transparent border border-blue-500/20 flex flex-col gap-4">

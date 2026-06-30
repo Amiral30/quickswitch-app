@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { loadFFmpeg } from '@/lib/ffmpeg'
 import { fetchFile } from '@ffmpeg/util'
 import { saveToHistory } from '@/lib/history'
 import Link from 'next/link'
+import { useQuota } from '@/hooks/useQuota'
+import AuthModal from '@/components/AuthModal'
+import { supabase } from '@/lib/supabase'
 
 const OUTPUT_FORMATS: Record<string, string[]> = {
   video: ['mp3', 'wav', 'ogg', 'mp4', 'mov', 'avi'],
@@ -29,15 +32,44 @@ export default function ConvertPage() {
   const [converting, setConverting] = useState(false)
   const [error, setError] = useState('')
   const [dragActive, setDragActive] = useState(false)
-  
+  const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+
+  const { tier, hasQuota, recordAction, limits } = useQuota()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }: any) => {
+      if (data.session) setUserEmail(data.session.user.email ?? null)
+    })
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
+      setUserEmail(session?.user?.email ?? null)
+    })
+    return () => { authListener.subscription.unsubscribe() }
+  }, [])
+
   const handleUpload = (selectedFile: File) => {
+    // 1. Validation de l'extension
     const category = getCategory(selectedFile.name)
     if (!category) {
       setError("Format de fichier non pris en charge pour la conversion.")
       return
     }
+
+    // 2. Validation de la taille de fichier maximale
+    const fileSizeMB = selectedFile.size / 1024 / 1024
+    if (fileSizeMB > limits.maxFileSizeMB) {
+      if (!userEmail) {
+        setError(`Fichier trop lourd (${fileSizeMB.toFixed(1)} Mo). Les utilisateurs non-connectés sont limités à 1 Mo. Veuillez créer un compte gratuit pour convertir jusqu'à 10 Mo.`)
+        setIsAuthOpen(true)
+      } else if (tier === 'FREE') {
+        setError(`Fichier trop lourd (${fileSizeMB.toFixed(1)} Mo). Ce fichier dépasse la limite gratuite de 10 Mo. Passez à e-swiftools Pro pour lever toutes les limites.`)
+      } else {
+        setError(`Fichier trop lourd. Limite maximale de 4 Go dépassée.`)
+      }
+      return
+    }
+
     setFile(selectedFile)
     setStep(2)
     setError('')
@@ -70,6 +102,17 @@ export default function ConvertPage() {
   const handleConvert = async () => {
     if (!file || !outputFormat) return
     
+    // 3. Validation de la limite quotidienne de quota
+    if (!hasQuota) {
+      if (!userEmail) {
+        setError("Limite journalière de 2 conversions atteinte. Créez un compte gratuit Google en 1 clic pour obtenir 10 conversions quotidiennes !")
+      } else {
+        setError("Votre quota de 10 conversions quotidiennes a été atteint. Revenez dans 24H ou passez à e-swiftools Pro pour des conversions illimitées !")
+      }
+      setIsAuthOpen(true)
+      return
+    }
+
     setConverting(true)
     setError('')
 
@@ -105,6 +148,9 @@ export default function ConvertPage() {
 
       // Log success to local storage history
       saveToHistory(file.name, 'Convertisseur', `${ext.toUpperCase()} ➔ ${outputFormat.toUpperCase()}`, 'success')
+      
+      // 4. Déduire un crédit du quota
+      recordAction()
       
     } catch (err) {
       setError('Erreur lors de la conversion. Le fichier est peut-être corrompu ou trop lourd.')
@@ -265,6 +311,9 @@ export default function ConvertPage() {
           </p>
         )}
       </div>
+
+      {/* Modale d'authentification intégrée */}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </div>
   )
 }

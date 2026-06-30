@@ -330,10 +330,25 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
                 </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Compresseur</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Réduisez le poids de vos images JPG ou PNG avec curseur de gestion de la qualité.</p>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Image</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Réduisez le poids de vos images JPG ou PNG tout en ajustant la qualité.</p>
               </div>
               <span className="text-xs font-semibold text-orange-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+            </div>
+          </Link>
+
+          <Link href="/compress/video" className="group">
+            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(236,72,153,0.2)' } as React.CSSProperties}>
+              <div className="flex flex-col gap-4">
+                <div className="w-12 h-12 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-500">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Vidéo</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Compressez massivement vos MP4/MOV jusqu'à -80% sans effort.</p>
+              </div>
+              <span className="text-xs font-semibold text-pink-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
             </div>
           </Link>
 
@@ -352,6 +367,24 @@ export default function Home() {
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Générez des QR codes pour vos liens, configurations WiFi, emails ou fiches vCard.</p>
               </div>
               <span className="text-xs font-semibold text-purple-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+            </div>
+          </Link>
+
+          <Link href="/password" className="group">
+            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/20">100% GRATUIT</span>
+                </div>
+                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Mot de passe</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Générez des mots de passe sécurisés instantanément sur votre appareil.</p>
+              </div>
+              <span className="text-xs font-semibold text-red-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
             </div>
           </Link>
 

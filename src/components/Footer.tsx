@@ -5,8 +5,10 @@ import Image from 'next/image'
 import { useQuota } from '@/hooks/useQuota'
 
 const tools = [
+  { label: 'Générateur de mot de passe', href: '/password' },
   { label: 'Convertisseur de fichiers', href: '/convert' },
   { label: 'Compresseur d\'images', href: '/compress/image' },
+  { label: 'Compresseur vidéo', href: '/compress/video' },
   { label: 'Créer un QR Code', href: '/qr/generate' },
   { label: 'Scanner un QR Code', href: '/qr/scan' },
 ]

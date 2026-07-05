@@ -18,10 +18,14 @@ export default function AuthModal({
   if (!isOpen) return null
 
   const handleGoogleLogin = async () => {
+    // Sauvegarder la page courante pour y revenir après connexion
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_redirect', window.location.pathname)
+    }
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: window.location.origin + '/auth/callback',
       },
     })
   }

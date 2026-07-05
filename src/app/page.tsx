@@ -186,7 +186,7 @@ export default function Home() {
                       {/* Overlay discret pour fermer au clic dehors */}
                       <div className="fixed inset-0 z-10" onClick={() => setIsProfileOpen(false)} />
                       
-                      <div className="absolute right-0 mt-3 w-64 glass-premium rounded-2xl p-4 shadow-xl border border-gray-250/10 z-20 animate-float" style={{ animationDuration: '4s' }}>
+                      <div className="absolute right-0 mt-3 w-64 glass-premium rounded-2xl p-4 shadow-xl border border-gray-250/10 z-20">
                         <div className="border-b border-gray-200/10 pb-3 mb-3">
                           <p className="text-[10px] uppercase font-extrabold tracking-wider text-gray-400">Compte connecté</p>
                           <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{userEmail}</p>
@@ -287,160 +287,170 @@ export default function Home() {
           </p>
         </section>
 
-        {/* Tools Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          <Link href="/qr/scan" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(20,184,166,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
+        {/* ── Section : Outils 100% Gratuits ──────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/20">100% GRATUIT</span>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Accès libre &amp; instantané</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <Link href="/qr/scan" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(20,184,166,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-teal-500/15 flex items-center justify-center text-teal-600 dark:text-teal-400">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m0 14v1m8-9h1m-16 0h1m3-6h8a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z" />
                     </svg>
                   </div>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/20">100% GRATUIT</span>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">Scanner QR Code</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Lisez instantanément des codes QR par flux caméra ou en déposant une image.</p>
                 </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Scanner QR Code</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Lisez instantanément des codes QR par flux caméra ou en déposant une image.</p>
+                <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
               </div>
-              <span className="text-xs font-semibold text-teal-600 dark:text-teal-400 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
+            </Link>
 
-          <Link href="/convert" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(59,130,246,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-500">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Convertisseur</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Modifiez le format de vos fichiers vidéo, audio, images et documents en local.</p>
-              </div>
-              <span className="text-xs font-semibold text-blue-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
-
-          <Link href="/compress/image" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(235,120,11,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/15 flex items-center justify-center text-orange-500">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Image</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Réduisez le poids de vos images JPG ou PNG tout en ajustant la qualité.</p>
-              </div>
-              <span className="text-xs font-semibold text-orange-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
-
-          <Link href="/compress/video" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(236,72,153,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-500">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Vidéo</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Compressez massivement vos MP4/MOV jusqu'à -80% sans effort.</p>
-              </div>
-              <span className="text-xs font-semibold text-pink-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
-
-          <Link href="/compress/pdf" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-500">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">PDF</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Réduisez le poids de vos documents PDF de manière sécurisée.</p>
-              </div>
-              <span className="text-xs font-semibold text-red-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
-
-          <Link href="/bg-remove" className="group lg:col-span-2 xl:col-span-1">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(99,102,241,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-500">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 border border-indigo-500/20 animate-pulse">MAGIQUE</span>
-                </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Détourage IA</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Supprimez le fond de n'importe quelle photo via notre IA 100% locale.</p>
-              </div>
-              <span className="text-xs font-semibold text-indigo-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
-
-          <Link href="/qr/generate" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(168,85,247,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center text-purple-500">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="7" height="7" rx="1" />
-                    <rect x="14" y="3" width="7" height="7" rx="1" />
-                    <rect x="3" y="14" width="7" height="7" rx="1" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 14h2v2h-2zm2 2h2v2h-2zm-2 2h2v-2zm4 0h2v2h-2z" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Créer QR Code</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Générez des QR codes pour vos liens, configurations WiFi, emails ou fiches vCard.</p>
-              </div>
-              <span className="text-xs font-semibold text-purple-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
-
-          <Link href="/password" className="group">
-            <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
+            <Link href="/password" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-500">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/20">100% GRATUIT</span>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">Mot de passe</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Générez des mots de passe sécurisés instantanément sur votre appareil.</p>
                 </div>
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white">Mot de passe</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Générez des mots de passe sécurisés instantanément sur votre appareil.</p>
+                <span className="text-xs font-semibold text-red-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
               </div>
-              <span className="text-xs font-semibold text-red-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
-            </div>
-          </Link>
+            </Link>
 
-          {/* Card: À venir */}
-          <div className="h-full glass-premium p-8 rounded-2xl flex flex-col justify-between gap-6 border border-dashed border-gray-300/30 dark:border-white/10 opacity-75 hover:opacity-100 transition-opacity duration-200">
-            <div className="flex flex-col gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gray-500/10 flex items-center justify-center text-gray-400">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
+            <Link href="/qr/generate" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(168,85,247,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center text-purple-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <rect x="3" y="3" width="7" height="7" rx="1" />
+                      <rect x="14" y="3" width="7" height="7" rx="1" />
+                      <rect x="3" y="14" width="7" height="7" rx="1" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 14h2v2h-2zm2 2h2v2h-2zm-2 2h2v-2zm4 0h2v2h-2z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">QR Code</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Générez des QR codes pour vos liens, configurations WiFi, emails ou fiches vCard.</p>
+                </div>
+                <span className="text-xs font-semibold text-purple-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
               </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-lg text-gray-500 dark:text-gray-400">Et d'autres...</h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 animate-pulse border border-blue-500/20">
-                  À venir
-                </span>
+            </Link>
+          </div>
+
+          {/* Bannière pub sous les outils gratuits */}
+          {tier !== 'PRO' && <AdBanner format="horizontal" className="mt-2" />}
+        </section>
+
+        {/* ── Section : Outils Avancés ────────────────────────────── */}
+        <section className="flex flex-col gap-6">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500 border border-blue-500/20">Outils</span>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Traitement Avancé</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+
+            <Link href="/convert" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(59,130,246,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                  </div>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">Convertisseur</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Modifiez le format de vos fichiers vidéo, audio, images et documents en local.</p>
+                </div>
+                <span className="text-xs font-semibold text-blue-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
               </div>
-              <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
-                De nouveaux outils d'édition de médias (Audio, Vidéos, PDF) arrivent très prochainement.
-              </p>
+            </Link>
+
+            <Link href="/compress/image" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(235,120,11,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-amber-500/15 flex items-center justify-center text-orange-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                  </div>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">Image</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Réduisez le poids de vos images JPG ou PNG tout en ajustant la qualité.</p>
+                </div>
+                <span className="text-xs font-semibold text-orange-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+              </div>
+            </Link>
+
+            <Link href="/compress/video" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(236,72,153,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">Vidéo</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Compressez massivement vos MP4/MOV jusqu'à -80% sans effort.</p>
+                </div>
+                <span className="text-xs font-semibold text-pink-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+              </div>
+            </Link>
+
+            <Link href="/compress/pdf" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-500">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">PDF</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Réduisez le poids de vos documents PDF de manière sécurisée.</p>
+                </div>
+                <span className="text-xs font-semibold text-red-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+              </div>
+            </Link>
+
+            <Link href="/bg-remove" className="group">
+              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(99,102,241,0.2)' } as React.CSSProperties}>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-500">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 border border-indigo-500/20 animate-pulse">MAGIQUE</span>
+                  </div>
+                  <h3 className="font-bold text-xl text-gray-900 dark:text-white">Détourage IA</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Supprimez le fond de n'importe quelle photo via notre IA 100% locale.</p>
+                </div>
+                <span className="text-xs font-semibold text-indigo-500 group-hover:translate-x-1 duration-150 inline-flex items-center gap-1">Lancer l'outil →</span>
+              </div>
+            </Link>
+
+            {/* Card: À venir */}
+            <div className="h-full glass-premium p-8 rounded-2xl flex flex-col justify-between gap-6 border border-dashed border-gray-300/30 dark:border-white/10 opacity-75 hover:opacity-100 transition-opacity duration-200">
+              <div className="flex flex-col gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gray-500/10 flex items-center justify-center text-gray-400">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-bold text-lg text-gray-500 dark:text-gray-400">Et d'autres...</h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 animate-pulse border border-blue-500/20">À venir</span>
+                </div>
+                <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">De nouveaux outils d'édition de médias arrivent très prochainement.</p>
+              </div>
+              <span className="text-xs font-semibold text-gray-400 dark:text-gray-500">Restez à l'écoute</span>
             </div>
-            <span className="text-xs font-semibold text-gray-400 dark:text-gray-500">Restez à l'écoute</span>
+
           </div>
         </section>
 

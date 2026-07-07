@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import AdBanner from '@/components/AdBanner'
 import type { Tier } from '@/hooks/useQuota'
+import { usePricing } from '@/hooks/usePricing'
 
 interface AdInterstitialProps {
   isOpen: boolean
@@ -23,6 +24,7 @@ export default function AdInterstitial({
   onClose,
   delaySeconds = 4,
 }: AdInterstitialProps) {
+  const { priceWithPeriod } = usePricing()
   const [countdown, setCountdown] = useState(delaySeconds)
   const [ready, setReady] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -218,7 +220,7 @@ export default function AdInterstitial({
                   onClick={onClose}
                   className="ml-3 flex-shrink-0 text-[10px] font-black px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap"
                 >
-                  2,99€/mois
+                  {priceWithPeriod}
                 </button>
               </div>
             </div>

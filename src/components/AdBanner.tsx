@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useQuota } from '@/hooks/useQuota'
+import { usePricing } from '@/hooks/usePricing'
 
 interface AdBannerProps {
   slot?: string
@@ -12,6 +13,7 @@ interface AdBannerProps {
 
 export default function AdBanner({ slot, format = 'horizontal', className = '', aadsUnitId }: AdBannerProps) {
   const { tier, loading } = useQuota()
+  const { price } = usePricing()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -124,7 +126,7 @@ export default function AdBanner({ slot, format = 'horizontal', className = '', 
         }}
         className="text-[9px] font-black uppercase tracking-wider text-white bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-1 rounded-full shadow-sm hover:opacity-90 duration-150"
       >
-        ⚡ Passer Premium 2,99€
+        ⚡ Passer Premium {price}
       </a>
     </div>
   )

@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase'
 import AuthModal from '@/components/AuthModal'
 import { useQuota } from '@/hooks/useQuota'
 import AdBanner from '@/components/AdBanner'
+import { usePricing } from '@/hooks/usePricing'
 
 interface HistoryItem {
   id: string;
@@ -17,12 +18,14 @@ interface HistoryItem {
   status: 'success' | 'error';
 }
 
+
 export default function Home() {
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [mounted, setMounted] = useState(false)
   const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const { tier, limits, actionsToday, loading } = useQuota()
+  const { price, priceWithPeriod } = usePricing()
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [userId, setUserId] = useState<string | null>(null)
 
@@ -193,7 +196,7 @@ export default function Home() {
                           <span className={`inline-block mt-1 text-[9px] font-black px-2 py-0.5 rounded-full ${
                             tier === 'PRO' ? 'bg-amber-500/20 text-orange-500 border border-amber-500/30' : 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
                           }`}>
-                            {tier === 'PRO' ? 'Premium (2,99€)' : 'Gratuit (10 Limite/jour)'}
+                            {tier === 'PRO' ? `Premium (${price})` : 'Gratuit (10 Limite/jour)'}
                           </span>
                         </div>
 
@@ -219,7 +222,7 @@ export default function Home() {
                               onClick={handleUpgrade}
                               className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs hover:opacity-95 shadow-md flex items-center justify-center gap-1.5 transition-all"
                             >
-                              ⚡ Passer Premium (2,99€)
+                              ⚡ Passer Premium ({price})
                             </button>
                           ) : (
                             <button 
@@ -547,12 +550,7 @@ export default function Home() {
                   Sans publicités
                 </li>
               </ul>
-              <button 
-                onClick={handleUpgrade}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl text-sm hover:opacity-95 shadow-md shadow-blue-500/10 hover:scale-[1.01] duration-150"
-              >
-                Accéder au forfait Pro (2,99€/mois)
-              </button>
+
             </section>
           )}
         </div>

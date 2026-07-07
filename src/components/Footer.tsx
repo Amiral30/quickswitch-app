@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useQuota } from '@/hooks/useQuota'
+import { usePricing } from '@/hooks/usePricing'
 
 const tools = [
   { label: 'Générateur de mot de passe', href: '/password' },
@@ -23,6 +24,7 @@ const legal = [
 export default function Footer() {
   const year = new Date().getFullYear()
   const { tier } = useQuota()
+  const { priceWithPeriod } = usePricing()
 
   return (
     <footer className="relative z-10 w-full mt-8 md:mt-12 border-t border-gray-200 dark:border-white/8">
@@ -134,7 +136,7 @@ export default function Footer() {
                   href="/#pricing"
                   className="text-xs font-bold text-center py-2.5 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:opacity-90 transition-opacity shadow-md shadow-blue-500/20"
                 >
-                  ⚡ Upgrade — 2,99€/mois
+                  ⚡ Upgrade — {priceWithPeriod}
                 </Link>
               </div>
             )}

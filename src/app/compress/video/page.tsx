@@ -79,6 +79,7 @@ export default function CompressVideo() {
   const handleCompress = async () => {
     if (!file) return
     
+    // Validation du quota quotidien au clic
     if (!hasQuota) {
       if (!userEmail) {
         setError("Limite journalière de 2 actions atteinte. Créez un compte gratuit pour obtenir 10 actions quotidiennes !")
@@ -92,6 +93,9 @@ export default function CompressVideo() {
     setCompressing(true)
     setError('')
     setProgress(0)
+    setResultUrl(null)
+    setResultFilename(`compressed_${file.name.replace(/\.[^.]+$/, '.mp4')}`)
+    setIsInterstitialOpen(true)
 
     try {
       const ffmpeg = await loadFFmpeg()
@@ -130,22 +134,20 @@ export default function CompressVideo() {
       
       const blob = new Blob([uint8], { type: 'video/mp4' })
       const url = URL.createObjectURL(blob)
-      const fname = `compressed_${file.name.replace(/\.[^.]+$/, '.mp4')}`
       
       setResultUrl(url)
-      setResultFilename(fname)
 
       saveToHistory(file.name, 'Compress. Vidéo', `Niveau : ${compressionLevel}`, 'success')
       recordAction()
 
       // Cleanup
       ffmpeg.off('progress', () => {})
-      setIsInterstitialOpen(true)
       
     } catch (err) {
       setError('Erreur lors de la compression. La vidéo est peut-être corrompue ou trop lourde.')
       console.error(err)
       saveToHistory(file.name, 'Compress. Vidéo', 'Échec', 'error')
+      setIsInterstitialOpen(false)
     } finally {
       setCompressing(false)
       setProgress(0)
@@ -201,7 +203,7 @@ export default function CompressVideo() {
             
             <div className="w-14 h-14 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
             </div>
             <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
@@ -234,7 +236,7 @@ export default function CompressVideo() {
                 </svg>
               </button>
             </div>
-
+ 
             {/* Config: Compression Level */}
             <div className="flex flex-col gap-3 p-4 rounded-xl bg-gray-500/5 border border-gray-200/10">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Niveau de compression</span>
@@ -300,6 +302,7 @@ export default function CompressVideo() {
       
       <AdInterstitial
         isOpen={isInterstitialOpen}
+        processing={compressing}
         tier={tier}
         filename={resultFilename}
         blobUrl={resultUrl}

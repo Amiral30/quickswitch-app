@@ -119,6 +119,9 @@ export default function ConvertPage() {
 
     setConverting(true)
     setError('')
+    setResultUrl(null)
+    setResultFilename(file.name.replace(/\.[^.]+$/, `.${outputFormat}`))
+    setIsInterstitialOpen(true)
 
     try {
       // Reuse shared loader to avoid loading 30MB over and over
@@ -145,22 +148,18 @@ export default function ConvertPage() {
       
       const blob = new Blob([uint8], { type: mimeType })
       const url = URL.createObjectURL(blob)
-      const fname = file.name.replace(/\.[^.]+$/, `.${outputFormat}`)
       setResultUrl(url)
-      setResultFilename(fname)
 
       // Log success to local storage history
       saveToHistory(file.name, 'Convertisseur', `${ext.toUpperCase()} ➔ ${outputFormat.toUpperCase()}`, 'success')
       
       // Déduire un crédit du quota
       recordAction()
-
-      // Ouvrir la modale (pub pour Free Users, instant pour Pro)
-      setIsInterstitialOpen(true)
       
     } catch (err) {
       setError('Erreur lors de la conversion. Le fichier est peut-être corrompu ou trop lourd.')
       console.error(err)
+      setIsInterstitialOpen(false)
       
       if (file) {
         saveToHistory(file.name, 'Convertisseur', `${file.name.split('.').pop()?.toUpperCase()} ➔ ${outputFormat.toUpperCase()}`, 'error')
@@ -324,6 +323,7 @@ export default function ConvertPage() {
       {/* Modale publicitaire + téléchargement */}
       <AdInterstitial
         isOpen={isInterstitialOpen}
+        processing={converting}
         tier={tier}
         filename={resultFilename}
         blobUrl={resultUrl}

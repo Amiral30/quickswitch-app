@@ -88,6 +88,9 @@ export default function CompressPDF() {
     setProcessing(true)
     setError('')
     setProgress(10)
+    setResultUrl(null)
+    setResultFilename(`e-swiftools_comprime_${file.name}`)
+    setIsInterstitialOpen(true)
 
     try {
       const arrayBuffer = await file.arrayBuffer()
@@ -103,20 +106,17 @@ export default function CompressPDF() {
       
       const blob = new Blob([new Uint8Array(pdfBytes) as unknown as ArrayBuffer], { type: 'application/pdf' })
       const url = URL.createObjectURL(blob)
-      const fname = `e-swiftools_comprime_${file.name}`
       
       setResultUrl(url)
-      setResultFilename(fname)
 
       saveToHistory(file.name, 'Compress. PDF', 'Optimisé via pdf-lib', 'success')
       recordAction()
-
-      setIsInterstitialOpen(true)
       
     } catch (err: any) {
       setError("Erreur IA lors de la compression. Le PDF est peut-être corrompu ou chiffré.")
       console.error(err)
       saveToHistory(file.name, 'Compress. PDF', 'Échec', 'error')
+      setIsInterstitialOpen(false)
     } finally {
       setProcessing(false)
       setProgress(0)
@@ -245,6 +245,7 @@ export default function CompressPDF() {
       
       <AdInterstitial
         isOpen={isInterstitialOpen}
+        processing={processing}
         tier={tier}
         filename={resultFilename}
         blobUrl={resultUrl}

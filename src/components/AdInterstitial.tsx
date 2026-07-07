@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import AdBanner from '@/components/AdBanner'
 import type { Tier } from '@/hooks/useQuota'
 
 interface AdInterstitialProps {
   isOpen: boolean
+  processing: boolean
   tier: Tier | null
   filename: string
   blobUrl: string | null
@@ -15,6 +16,7 @@ interface AdInterstitialProps {
 
 export default function AdInterstitial({
   isOpen,
+  processing,
   tier,
   filename,
   blobUrl,
@@ -24,20 +26,33 @@ export default function AdInterstitial({
   const [countdown, setCountdown] = useState(delaySeconds)
   const [ready, setReady] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const hasAutoDownloaded = useRef(false)
 
-  // Reset + start countdown each time the modal opens
+  // Reset state when modal opens
   useEffect(() => {
-    if (!isOpen) return
+    if (isOpen) {
+      setCountdown(delaySeconds)
+      setReady(false)
+      hasAutoDownloaded.current = false
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [isOpen, delaySeconds])
 
-    // PRO users get instant access — no waiting
+  // Phase 2: Start countdown AFTER processing finishes (only for non-PRO)
+  useEffect(() => {
+    if (!isOpen || processing) return
+
+    // PRO users: instant ready
     if (tier === 'PRO') {
       setCountdown(0)
       setReady(true)
       return
     }
 
+    // FREE users: start the 4s countdown now
     setCountdown(delaySeconds)
-    setReady(false)
 
     intervalRef.current = setInterval(() => {
       setCountdown((prev) => {
@@ -53,24 +68,49 @@ export default function AdInterstitial({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [isOpen, tier, delaySeconds])
+  }, [isOpen, processing, tier, delaySeconds])
+
+  // PRO auto-download: as soon as processing ends and blobUrl is available
+  const triggerDownload = useCallback((url: string, name: string) => {
+    const a = document.createElement('a')
+    a.href = url
+    a.download = name
+    a.click()
+    setTimeout(() => {
+      URL.revokeObjectURL(url)
+      onClose()
+    }, 500)
+  }, [onClose])
+
+  useEffect(() => {
+    if (!isOpen || processing || !blobUrl || hasAutoDownloaded.current) return
+    if (tier === 'PRO') {
+      hasAutoDownloaded.current = true
+      triggerDownload(blobUrl, filename)
+    }
+  }, [isOpen, processing, tier, blobUrl, filename, triggerDownload])
 
   const handleDownload = () => {
     if (!blobUrl || !ready) return
-    const a = document.createElement('a')
-    a.href = blobUrl
-    a.download = filename
-    a.click()
-    // Small delay before revoking to let the browser start the download
-    setTimeout(() => {
-      URL.revokeObjectURL(blobUrl)
-      onClose()
-    }, 500)
+    triggerDownload(blobUrl, filename)
   }
 
   if (!isOpen) return null
 
-  const progress = tier === 'PRO' ? 100 : ((delaySeconds - countdown) / delaySeconds) * 100
+  // Progress bar calculation
+  const getProgress = () => {
+    if (tier === 'PRO') {
+      return processing ? 50 : 100
+    }
+    if (processing) {
+      // Indeterminate-style: stays at ~40% during processing
+      return 40
+    }
+    // Post-processing countdown
+    return 40 + ((delaySeconds - countdown) / delaySeconds) * 60
+  }
+
+  const progress = getProgress()
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8">
@@ -83,10 +123,12 @@ export default function AdInterstitial({
         {/* Progress bar at top */}
         <div className="h-1 w-full bg-gray-200/10">
           <div
-            className={`h-full transition-all duration-1000 ease-linear rounded-full ${
+            className={`h-full rounded-full transition-all ease-linear ${
               tier === 'PRO'
-                ? 'bg-gradient-to-r from-amber-400 to-orange-500 w-full'
-                : 'bg-gradient-to-r from-blue-500 to-purple-500'
+                ? 'bg-gradient-to-r from-amber-400 to-orange-500 duration-500'
+                : processing
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-500 duration-[2000ms] animate-pulse'
+                  : 'bg-gradient-to-r from-blue-500 to-purple-500 duration-1000'
             }`}
             style={{ width: `${progress}%` }}
           />
@@ -107,23 +149,50 @@ export default function AdInterstitial({
               )}
             </div>
             <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-              <svg className="w-4 h-4 text-green-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                <circle cx="10" cy="10" r="5" />
-              </svg>
-              <span className="text-xs font-bold">Traitement terminé ✓</span>
+              {processing ? (
+                <>
+                  <svg className="w-4 h-4 text-blue-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  <span className="text-xs font-bold">Traitement en cours...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 text-green-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="5" />
+                  </svg>
+                  <span className="text-xs font-bold">Traitement terminé ✓</span>
+                </>
+              )}
             </div>
           </div>
 
-          {/* File name */}
+          {/* File status */}
           <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-500/5 border border-gray-200/10">
-            <div className="w-9 h-9 rounded-lg bg-green-500/15 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+              processing ? 'bg-blue-500/15' : 'bg-green-500/15'
+            }`}>
+              {processing ? (
+                <svg className="w-5 h-5 text-blue-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-black text-gray-800 dark:text-gray-200 truncate">{filename}</p>
-              <p className="text-[10px] text-green-600 dark:text-green-400 font-semibold mt-0.5">Prêt à télécharger</p>
+              <p className="text-xs font-black text-gray-800 dark:text-gray-200 truncate">
+                {filename || 'Votre fichier'}
+              </p>
+              <p className={`text-[10px] font-semibold mt-0.5 ${
+                processing ? 'text-blue-600 dark:text-blue-400' : 'text-green-600 dark:text-green-400'
+              }`}>
+                {processing ? 'Traitement de votre fichier...' : 'Prêt à télécharger'}
+              </p>
             </div>
           </div>
 
@@ -132,7 +201,7 @@ export default function AdInterstitial({
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Message sponsorisé</span>
-                {!ready && (
+                {!processing && !ready && (
                   <span className="text-[11px] font-black text-blue-500 tabular-nums">
                     {countdown}s
                   </span>
@@ -155,17 +224,39 @@ export default function AdInterstitial({
             </div>
           )}
 
+          {/* PRO processing indicator (no ad, just elegant feedback) */}
+          {tier === 'PRO' && processing && (
+            <div className="flex items-center justify-center gap-3 py-4">
+              <div className="flex gap-1">
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+              <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                Traitement en cours...
+              </span>
+            </div>
+          )}
+
           {/* Download button */}
           <button
             onClick={handleDownload}
-            disabled={!ready}
+            disabled={!ready || processing}
             className={`w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 ${
-              ready
+              ready && !processing
                 ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/20 hover:opacity-95 hover:scale-[1.01] cursor-pointer'
                 : 'bg-gray-200 dark:bg-white/10 text-gray-400 cursor-not-allowed opacity-60'
             }`}
           >
-            {ready ? (
+            {processing ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Traitement en cours...
+              </>
+            ) : ready ? (
               <>
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

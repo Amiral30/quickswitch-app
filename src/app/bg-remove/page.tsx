@@ -116,6 +116,9 @@ export default function BackgroundRemover() {
     setProcessing(true)
     setError('')
     setProgressMsg('Envoi de l\'image au serveur...')
+    setResultUrl(null)
+    setResultFilename(`transparent_${file.name.replace(/\.[^.]+$/, '.png')}`)
+    setIsInterstitialOpen(true)
 
     try {
       // Build multipart form and call our secure server-side route
@@ -137,21 +140,18 @@ export default function BackgroundRemover() {
       // The route returns the PNG blob directly
       const blob = await response.blob()
       const url = URL.createObjectURL(blob)
-      const fname = `transparent_${file.name.replace(/\.[^.]+$/, '.png')}`
 
       setResultUrl(url)
-      setResultFilename(fname)
       setSliderPos(50)
 
       saveToHistory(file.name, 'Détourage IA', 'Fond supprimé', 'success')
       recordAction()
 
-      setIsInterstitialOpen(true)
-
     } catch (err: any) {
       setError(err.message || "Erreur lors du détourage. Réessayez.")
       console.error(err)
       saveToHistory(file?.name ?? 'image', 'Détourage IA', 'Échec', 'error')
+      setIsInterstitialOpen(false)
     } finally {
       setProcessing(false)
       setProgressMsg('')
@@ -400,6 +400,7 @@ export default function BackgroundRemover() {
 
       <AdInterstitial
         isOpen={isInterstitialOpen}
+        processing={processing}
         tier={tier}
         filename={resultFilename}
         blobUrl={resultUrl}

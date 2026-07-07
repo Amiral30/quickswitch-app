@@ -65,6 +65,9 @@ export default function CompressImage() {
 
     setCompressing(true)
     setError('')
+    setResultUrl(null)
+    setResultFilename(`compressed_${file.name}`)
+    setIsInterstitialOpen(true)
 
     try {
       const canvas = document.createElement('canvas')
@@ -94,9 +97,7 @@ export default function CompressImage() {
               (blob) => {
                 if (blob) {
                   const url = URL.createObjectURL(blob)
-                  const fname = `compressed_${file.name}`
                   setResultUrl(url)
-                  setResultFilename(fname)
                   resolve()
                 } else {
                   reject(new Error("La compression Canvas a échoué."))
@@ -115,12 +116,11 @@ export default function CompressImage() {
       saveToHistory(file.name, 'Compresseur', `Qualité : ${(quality * 100).toFixed(0)}%`, 'success')
       recordAction()
       URL.revokeObjectURL(url)
-      // Ouvrir la modale de téléchargement (avec pub pour les Free Users)
-      setIsInterstitialOpen(true)
     } catch (err) {
       setError('Erreur lors de la compression de la photo.')
       console.error(err)
       saveToHistory(file.name, 'Compresseur', 'Échec compression', 'error')
+      setIsInterstitialOpen(false)
     } finally {
       setCompressing(false)
     }
@@ -236,6 +236,7 @@ export default function CompressImage() {
       {/* Modale publicitaire + téléchargement */}
       <AdInterstitial
         isOpen={isInterstitialOpen}
+        processing={compressing}
         tier={tier}
         filename={resultFilename}
         blobUrl={resultUrl}

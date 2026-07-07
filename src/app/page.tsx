@@ -283,10 +283,10 @@ export default function Home() {
             Traitement 100% Hors-ligne / Local
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
-            Gérez vos fichiers en un <span className="text-gradient">Raccourci</span>
+            Un seul outil. Pour tout ce que vous faites <span className="text-gradient">au quotidien.</span>
           </h1>
           <p className="text-md md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto leading-relaxed">
-            Convertissez, compressez et lisez des QR codes instantanément. Vos données ne quittent jamais votre ordinateur.
+            Images, vidéos, PDF, QR codes — traités instantanément, 100% en local sur votre appareil. Sans installation, rapide et sûr.
           </p>
         </section>
 

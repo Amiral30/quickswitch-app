@@ -14,7 +14,7 @@ export interface QuotaLimits {
 
 const LIMITS: Record<Tier, QuotaLimits> = {
   ANON: { tier: 'ANON', maxActions: 2, maxFileSizeMB: 1, maxBatchSize: 1 },
-  FREE: { tier: 'FREE', maxActions: 10, maxFileSizeMB: 10, maxBatchSize: 5 },
+  FREE: { tier: 'FREE', maxActions: 5, maxFileSizeMB: 10, maxBatchSize: 5 },
   PRO:  { tier: 'PRO', maxActions: 9999, maxFileSizeMB: 4000, maxBatchSize: 9999 },
 }
 

@@ -196,7 +196,7 @@ export default function Home() {
                           <span className={`inline-block mt-1 text-[9px] font-black px-2 py-0.5 rounded-full ${
                             tier === 'PRO' ? 'bg-amber-500/20 text-orange-500 border border-amber-500/30' : 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
                           }`}>
-                            {tier === 'PRO' ? `Premium (${price})` : 'Gratuit (10 Limite/jour)'}
+                            {tier === 'PRO' ? `Premium (${price})` : 'Gratuit (5 actions/jour)'}
                           </span>
                         </div>
 

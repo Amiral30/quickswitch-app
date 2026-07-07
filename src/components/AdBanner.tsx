@@ -7,9 +7,10 @@ interface AdBannerProps {
   slot?: string
   format?: 'horizontal' | 'rectangle' | 'vertical'
   className?: string
+  aadsUnitId?: string
 }
 
-export default function AdBanner({ slot, format = 'horizontal', className = '' }: AdBannerProps) {
+export default function AdBanner({ slot, format = 'horizontal', className = '', aadsUnitId }: AdBannerProps) {
   const { tier, loading } = useQuota()
   const [mounted, setMounted] = useState(false)
 
@@ -47,7 +48,8 @@ export default function AdBanner({ slot, format = 'horizontal', className = '' }
     },
   }
 
-  const { label, h, w, defaultSlot, aadsUnit, sizeStr } = sizes[format]
+  const { label, h, w, defaultSlot, aadsUnit: defaultAadsUnit, sizeStr } = sizes[format]
+  const aadsUnit = aadsUnitId || defaultAadsUnit
   const adSlot = slot || defaultSlot || ''
 
   // Initialize AdSense only if loading real AdSense ads

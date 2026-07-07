@@ -344,7 +344,7 @@ export default function Home() {
           </div>
 
           {/* Bannière pub sous les outils gratuits */}
-          {tier !== 'PRO' && <AdBanner format="horizontal" className="mt-2" />}
+          {tier !== 'PRO' && <AdBanner format="horizontal" className="mt-2" aadsUnitId={process.env.NEXT_PUBLIC_AADS_UNIT_HORIZONTAL} />}
         </section>
 
         {/* ── Section : Outils Avancés ────────────────────────────── */}
@@ -518,7 +518,7 @@ export default function Home() {
             </section>
 
             {/* Publicité sous l'historique (Cachée pour les PRO) */}
-            {tier !== 'PRO' && <AdBanner format="horizontal" />}
+            {tier !== 'PRO' && <AdBanner format="horizontal" aadsUnitId={process.env.NEXT_PUBLIC_AADS_UNIT_HORIZONTAL_2} />}
           </div>
 
           {/* Pro Card (Cachée pour les PRO) */}
@@ -620,7 +620,7 @@ export default function Home() {
         </section>
 
         {/* Bannière pub horizontale */}
-        <AdBanner format="horizontal" className="mt-2" />
+        <AdBanner format="horizontal" className="mt-2" aadsUnitId={process.env.NEXT_PUBLIC_AADS_UNIT_HORIZONTAL_3} />
 
       </main>
     </div>

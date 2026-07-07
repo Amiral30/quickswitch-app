@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "e-swiftools — Un seul outil pour tout ce que vous faites au quotidien",
-  description: "Images, vidéos, PDF, QR codes — traités instantanément, 100% en local sur votre appareil. Sans installation, rapide et sûr.",
+  description: "Images, vidéos, PDF, QR codes — traités instantanément en local sur votre appareil. Sans installation, rapide et sûr.",
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",

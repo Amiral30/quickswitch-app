@@ -62,11 +62,10 @@ export default function AdBanner({ slot, format = 'horizontal', className = '' }
     }
   }, [mounted, loading, tier, aadsUnit, publisherId])
 
-  // We render the iframe during server-side rendering so that web crawlers/bots (which don't execute JS)
-  // can verify the ad unit code. On the client, we hide it if the user is verified PRO.
-  const isPro = mounted && !loading && tier === 'PRO';
+  if (!mounted || loading) return null
 
-  if (isPro) return null;
+  // PRO users DO NOT see any ads
+  if (tier === 'PRO') return null
 
   // 1. Prioritize A-Ads if the corresponding identity is configured in environment parameters
   if (aadsUnit) {

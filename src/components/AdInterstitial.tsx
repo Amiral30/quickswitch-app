@@ -120,7 +120,7 @@ export default function AdInterstitial({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-md glass-premium rounded-2xl shadow-2xl border border-gray-200/20 overflow-hidden animate-float" style={{ animationDuration: '6s' }}>
+      <div className="relative z-10 w-full max-w-md glass-premium rounded-2xl shadow-2xl border border-gray-200/20 overflow-hidden animate-scale-spring">
 
         {/* Progress bar at top */}
         <div className="h-1 w-full bg-gray-200/10">

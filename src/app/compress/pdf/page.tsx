@@ -8,6 +8,7 @@ import AuthModal from '@/components/AuthModal'
 import AdInterstitial from '@/components/AdInterstitial'
 import { supabase } from '@/lib/supabase'
 import { PDFDocument } from 'pdf-lib'
+import FileDropzone from '@/components/FileDropzone'
 
 export default function CompressPDF() {
   const [file, setFile] = useState<File | null>(null)
@@ -15,7 +16,6 @@ export default function CompressPDF() {
   const [progress, setProgress] = useState(0)
   
   const [error, setError] = useState('')
-  const [dragActive, setDragActive] = useState(false)
   
   const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [isInterstitialOpen, setIsInterstitialOpen] = useState(false)
@@ -60,20 +60,7 @@ export default function CompressPDF() {
     setProgress(0)
   }
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true)
-    else if (e.type === "dragleave") setDragActive(false)
-  }
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    const droppedFile = e.dataTransfer.files?.[0]
-    if (droppedFile) handleUpload(droppedFile)
-  }
 
   const handleCompress = async () => {
     if (!file) return
@@ -151,41 +138,13 @@ export default function CompressPDF() {
 
         {/* Upload Zone */}
         {!file ? (
-          <div 
-            className={`flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-8 transition-colors duration-200 cursor-pointer 
-              ${dragActive ? 'border-red-500 bg-red-500/5' : 'border-gray-300 dark:border-white/10 hover:border-red-500/50 hover:bg-gray-500/5'}`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          >
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => {
-                const selected = e.target.files?.[0]
-                if (selected) handleUpload(selected)
-              }}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              title="Sélectionner un PDF"
-            />
-            
-            <div className="w-14 h-14 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mb-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-              Glissez-déposez un PDF ici
-            </p>
-            <p className="text-xs text-gray-500 font-semibold mt-1">
-              Fichier PDF uniquement
-            </p>
-            
-            <span className="mt-6 px-4 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold pointer-events-none">
-              Parcourir les fichiers
-            </span>
-          </div>
+          <FileDropzone
+            accept="application/pdf"
+            onFileSelected={handleUpload}
+            colorTheme="red"
+            title="Glissez-déposez un PDF ici"
+            description={`Fichier PDF uniquement (Max : ${tier === 'PRO' ? '4 Go' : '10 Mo'})`}
+          />
         ) : (
           <div className="flex flex-col gap-4">
             

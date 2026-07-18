@@ -9,6 +9,7 @@ import { useQuota } from '@/hooks/useQuota'
 import AuthModal from '@/components/AuthModal'
 import AdInterstitial from '@/components/AdInterstitial'
 import { supabase } from '@/lib/supabase'
+import FileDropzone from '@/components/FileDropzone'
 
 const OUTPUT_FORMATS: Record<string, string[]> = {
   video: ['mp3', 'wav', 'ogg', 'mp4', 'mov', 'avi'],
@@ -31,16 +32,7 @@ export default function ConvertPage() {
   const [step, setStep] = useState(1)
   const [outputFormat, setOutputFormat] = useState('')
   const [converting, setConverting] = useState(false)
-  const [error, setError] = useState('')
-  const [dragActive, setDragActive] = useState(false)
-  const [isAuthOpen, setIsAuthOpen] = useState(false)
-  const [isInterstitialOpen, setIsInterstitialOpen] = useState(false)
-  const [resultUrl, setResultUrl] = useState<string | null>(null)
-  const [resultFilename, setResultFilename] = useState('')
-  const [userEmail, setUserEmail] = useState<string | null>(null)
-
   const { tier, hasQuota, recordAction, limits } = useQuota()
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }: any) => {
@@ -79,29 +71,11 @@ export default function ConvertPage() {
     setError('')
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0]
-    if (selected) handleUpload(selected)
-  }
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
-    } else if (e.type === "dragleave") {
-      setDragActive(false)
-    }
-  }
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    
-    const droppedFile = e.dataTransfer.files?.[0]
-    if (droppedFile) handleUpload(droppedFile)
-  }
+  const [isAuthOpen, setIsAuthOpen] = useState(false)
+  const [isInterstitialOpen, setIsInterstitialOpen] = useState(false)
+  const [resultUrl, setResultUrl] = useState<string | null>(null)
+  const [resultFilename, setResultFilename] = useState('')
+  const [userEmail, setUserEmail] = useState<string | null>(null)
 
   const handleConvert = async () => {
     if (!file || !outputFormat) return
@@ -196,49 +170,13 @@ export default function ConvertPage() {
         </div>
 
         {step === 1 && (
-          <div 
-            onDragEnter={handleDrag}
-            onDragOver={handleDrag}
-            onDragLeave={handleDrag}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className={`w-full p-10 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-200 ${
-              dragActive 
-                ? 'border-blue-500 bg-blue-500/5 scale-[0.99]' 
-                : 'border-gray-250/20 hover:border-blue-500/60 hover:bg-blue-500/5'
-            }`}
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="video/*,audio/*,image/*,.pdf,.doc,.docx"
-              onChange={handleInputChange}
-              className="hidden"
-            />
-            
-            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" stroke="m4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12" />
-              </svg>
-            </div>
-
-            <div className="text-center">
-              <p className="font-bold text-gray-700 dark:text-gray-300">
-                Glissez-déposez un fichier ici
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                ou cliquez pour parcourir les dossiers
-              </p>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-1.5 mt-2">
-              {['MP4', 'MOV', 'MP3', 'WAV', 'PNG', 'JPG', 'PDF', 'DOCX'].map((badge) => (
-                <span key={badge} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-500/10 text-gray-500 dark:text-gray-400">
-                  {badge}
-                </span>
-              ))}
-            </div>
-          </div>
+          <FileDropzone
+            accept="video/*,audio/*,image/*,.pdf,.doc,.docx"
+            onFileSelected={handleUpload}
+            colorTheme="blue"
+            title="Glissez-déposez un fichier ici"
+            description="ou cliquez pour parcourir les dossiers"
+          />
         )}
 
         {step === 2 && file && (

@@ -7,6 +7,7 @@ import { useQuota } from '@/hooks/useQuota'
 import AuthModal from '@/components/AuthModal'
 import AdInterstitial from '@/components/AdInterstitial'
 import { supabase } from '@/lib/supabase'
+import FileDropzone from '@/components/FileDropzone'
 
 export default function BackgroundRemover() {
   const [file, setFile] = useState<File | null>(null)
@@ -14,7 +15,6 @@ export default function BackgroundRemover() {
   const [processing, setProcessing] = useState(false)
   const [progressMsg, setProgressMsg] = useState('')
   const [error, setError] = useState('')
-  const [dragActive, setDragActive] = useState(false)
 
   const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [isInterstitialOpen, setIsInterstitialOpen] = useState(false)
@@ -86,20 +86,7 @@ export default function BackgroundRemover() {
     setProgressMsg('')
   }
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true)
-    else if (e.type === "dragleave") setDragActive(false)
-  }
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    const droppedFile = e.dataTransfer.files?.[0]
-    if (droppedFile) handleUpload(droppedFile)
-  }
 
   const handleRemoveBackground = async () => {
     if (!file) return
@@ -212,36 +199,13 @@ export default function BackgroundRemover() {
 
         {/* Upload Zone */}
         {!file ? (
-          <div
-            className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-8 transition-colors duration-200 cursor-pointer 
-              ${dragActive ? 'border-indigo-500 bg-indigo-500/5' : 'border-gray-300 dark:border-white/10 hover:border-indigo-500/50 hover:bg-gray-500/5'}`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          >
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              onChange={(e) => {
-                const selected = e.target.files?.[0]
-                if (selected) handleUpload(selected)
-              }}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              title="Sélectionner une photo"
-            />
-            <div className="w-14 h-14 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </div>
-            <p className="text-sm font-bold text-gray-700 dark:text-gray-300">Glissez-déposez une image ici</p>
-            <p className="text-xs text-gray-500 font-semibold mt-1">JPG, PNG, WEBP • Max {limits.maxFileSizeMB} Mo</p>
-            <span className="mt-6 px-4 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold pointer-events-none">
-              Parcourir les fichiers
-            </span>
-          </div>
+          <FileDropzone
+            accept="image/png,image/jpeg,image/webp"
+            onFileSelected={handleUpload}
+            colorTheme="indigo"
+            title="Glissez-déposez une image ici"
+            description={`JPG, PNG, WEBP • Max ${limits.maxFileSizeMB} Mo`}
+          />
         ) : (
           <div className="flex flex-col gap-4">
 

@@ -9,6 +9,7 @@ import { useQuota } from '@/hooks/useQuota'
 import AuthModal from '@/components/AuthModal'
 import AdInterstitial from '@/components/AdInterstitial'
 import { supabase } from '@/lib/supabase'
+import FileDropzone from '@/components/FileDropzone'
 
 export default function CompressVideo() {
   const [file, setFile] = useState<File | null>(null)
@@ -16,7 +17,6 @@ export default function CompressVideo() {
   const [compressing, setCompressing] = useState(false)
   const [progress, setProgress] = useState(0)
   const [error, setError] = useState('')
-  const [dragActive, setDragActive] = useState(false)
   
   const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [isInterstitialOpen, setIsInterstitialOpen] = useState(false)
@@ -61,20 +61,7 @@ export default function CompressVideo() {
     setProgress(0)
   }
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") setDragActive(true)
-    else if (e.type === "dragleave") setDragActive(false)
-  }
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    const droppedFile = e.dataTransfer.files?.[0]
-    if (droppedFile) handleUpload(droppedFile)
-  }
 
   const handleCompress = async () => {
     if (!file) return
@@ -182,41 +169,13 @@ export default function CompressVideo() {
 
         {/* Upload Zone */}
         {!file ? (
-          <div 
-            className={`flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-8 transition-colors duration-200 cursor-pointer 
-              ${dragActive ? 'border-blue-500 bg-blue-500/5' : 'border-gray-300 dark:border-white/10 hover:border-blue-500/50 hover:bg-gray-500/5'}`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          >
-            <input
-              type="file"
-              accept="video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/webm"
-              onChange={(e) => {
-                const selected = e.target.files?.[0]
-                if (selected) handleUpload(selected)
-              }}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              title="Sélectionner une vidéo"
-            />
-            
-            <div className="w-14 h-14 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-              Glissez-déposez une vidéo ici
-            </p>
-            <p className="text-xs text-gray-500 font-semibold mt-1">
-              MP4, MOV, AVI, MKV (Max: {tier === 'PRO' ? '4 Go' : '10 Mo'})
-            </p>
-            
-            <span className="mt-6 px-4 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-bold pointer-events-none">
-              Parcourir les fichiers
-            </span>
-          </div>
+          <FileDropzone
+            accept="video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/webm"
+            onFileSelected={handleUpload}
+            colorTheme="pink"
+            title="Glissez-déposez une vidéo ici"
+            description={`MP4, MOV, AVI, MKV (Max : ${tier === 'PRO' ? '4 Go' : '10 Mo'})`}
+          />
         ) : (
           <div className="flex flex-col gap-4">
             

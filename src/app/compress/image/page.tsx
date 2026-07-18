@@ -7,6 +7,7 @@ import { useQuota } from '@/hooks/useQuota'
 import AuthModal from '@/components/AuthModal'
 import AdInterstitial from '@/components/AdInterstitial'
 import { supabase } from '@/lib/supabase'
+import FileDropzone from '@/components/FileDropzone'
 
 export default function CompressImage() {
   const [file, setFile] = useState<File | null>(null)
@@ -151,17 +152,15 @@ export default function CompressImage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/jpg"
-            onChange={(e) => {
-              const selected = e.target.files?.[0]
-              if (selected) handleUpload(selected)
-            }}
-            className="w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-orange-500/15 file:text-orange-500 hover:file:bg-orange-500/25 file:cursor-pointer"
-          />
-
-          {file && (
+          {!file ? (
+            <FileDropzone
+              accept="image/png,image/jpeg,image/jpg"
+              onFileSelected={handleUpload}
+              colorTheme="orange"
+              title="Glissez-déposez une image ici"
+              description={`JPG, PNG (Max : ${limits.maxFileSizeMB} Mo)`}
+            />
+          ) : (
             <div className="flex items-center gap-3 p-3.5 rounded-xl bg-gray-500/5 border border-gray-200/10">
               <div className="w-9 h-9 rounded-lg bg-orange-500/15 flex items-center justify-center text-orange-500 font-bold text-[10px]">
                 {ext}
@@ -174,6 +173,14 @@ export default function CompressImage() {
                   {(file.size / 1024).toFixed(0)} Ko
                 </p>
               </div>
+              <button
+                onClick={() => setFile(null)}
+                className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-500/10"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           )}
 

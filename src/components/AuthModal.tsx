@@ -34,12 +34,12 @@ export default function AuthModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Overlay */}
       <div 
-        className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-gray-900/50 backdrop-blur-md transition-opacity duration-300 animate-fade-in"
         onClick={onClose}
       />
       
-      {/* Modal */}
-      <div className="relative w-full max-w-md glass-premium rounded-3xl p-8 shadow-2xl flex flex-col gap-6 animate-float" style={{ animationDuration: '8s' }}>
+      {/* Modal with Spring Animation */}
+      <div className="relative w-full max-w-md glass-premium rounded-3xl p-8 shadow-2xl flex flex-col gap-6 animate-scale-spring">
         
         {/* Close Button */}
         <button 

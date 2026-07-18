@@ -12,6 +12,8 @@ interface Particle {
   radius: number
   opacity: number
   hue: number
+  twinkleSpeed: number
+  twinkleOffset: number
 }
 
 export default function Particles() {
@@ -28,7 +30,7 @@ export default function Particles() {
     let mouseX = -9999
     let mouseY = -9999
     const particles: Particle[] = []
-    const PARTICLE_COUNT = 55
+    const PARTICLE_COUNT = tier === 'PRO' ? 80 : 55
 
     const isDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches
 
@@ -44,12 +46,14 @@ export default function Particles() {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
-          radius: Math.random() * 1.8 + 0.6,
+          vx: (Math.random() - 0.5) * (isPro ? 0.45 : 0.35),
+          vy: (Math.random() - 0.5) * (isPro ? 0.45 : 0.35),
+          radius: Math.random() * (isPro ? 2.2 : 1.8) + 0.6,
           opacity: Math.random() * 0.45 + 0.08,
           // Si PRO : spectrum Or/Orange (30-55). Si normal : Bleu/Violet (195-275)
           hue: Math.random() * (isPro ? 25 : 80) + (isPro ? 30 : 195),
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          twinkleOffset: Math.random() * Math.PI * 2,
         })
       }
     }
@@ -89,12 +93,25 @@ export default function Particles() {
         if (p.y < 0) p.y = canvas.height
         if (p.y > canvas.height) p.y = 0
 
+        // Twinkle effect for PRO particles
+        const twinkleOpacity = tier === 'PRO'
+          ? p.opacity * (0.6 + 0.4 * Math.sin(Date.now() * p.twinkleSpeed + p.twinkleOffset))
+          : p.opacity
+
         // Draw dot
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-        ctx.fillStyle = dark
-          ? `hsla(${p.hue}, 85%, 72%, ${p.opacity})`
-          : `hsla(${p.hue}, 55%, 38%, ${p.opacity * 0.55})`
+        if (tier === 'PRO') {
+          // Radial gold shimmer for PRO
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 2)
+          grad.addColorStop(0, `hsla(${p.hue}, 95%, 85%, ${twinkleOpacity})`)
+          grad.addColorStop(1, `hsla(${p.hue}, 80%, 55%, 0)`)
+          ctx.fillStyle = grad
+        } else {
+          ctx.fillStyle = dark
+            ? `hsla(${p.hue}, 85%, 72%, ${twinkleOpacity})`
+            : `hsla(${p.hue}, 55%, 38%, ${twinkleOpacity * 0.55})`
+        }
         ctx.fill()
 
         // Draw connections
@@ -108,10 +125,12 @@ export default function Particles() {
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(p2.x, p2.y)
-            ctx.strokeStyle = dark
-              ? `hsla(${p.hue}, 85%, 72%, ${a})`
-              : `hsla(${p.hue}, 55%, 38%, ${a})`
-            ctx.lineWidth = 0.5
+            ctx.strokeStyle = tier === 'PRO'
+              ? `hsla(${p.hue}, 90%, 70%, ${a * 1.5})`
+              : dark
+                ? `hsla(${p.hue}, 85%, 72%, ${a})`
+                : `hsla(${p.hue}, 55%, 38%, ${a})`
+            ctx.lineWidth = tier === 'PRO' ? 0.8 : 0.5
             ctx.stroke()
           }
         }

@@ -110,6 +110,14 @@ export default function Home() {
     }
   }
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    e.currentTarget.style.setProperty('--mouse-x', `${x}px`)
+    e.currentTarget.style.setProperty('--mouse-y', `${y}px`)
+  }
+
   if (!mounted) return null
 
   return (
@@ -298,7 +306,11 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <Link href="/qr/scan" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(20,184,166,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(20,184,166,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-teal-500/15 flex items-center justify-center text-teal-600 dark:text-teal-400">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -313,7 +325,11 @@ export default function Home() {
             </Link>
 
             <Link href="/password" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-500">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -328,7 +344,11 @@ export default function Home() {
             </Link>
 
             <Link href="/qr/generate" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(168,85,247,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(168,85,247,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center text-purple-500">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -359,7 +379,11 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
 
             <Link href="/convert" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(59,130,246,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(59,130,246,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-500">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -374,7 +398,11 @@ export default function Home() {
             </Link>
 
             <Link href="/compress/image" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(235,120,11,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(235,120,11,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-amber-500/15 flex items-center justify-center text-orange-500">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -389,7 +417,11 @@ export default function Home() {
             </Link>
 
             <Link href="/compress/video" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(236,72,153,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(236,72,153,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-500">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -404,7 +436,11 @@ export default function Home() {
             </Link>
 
             <Link href="/compress/pdf" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(239,68,68,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-500">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -419,7 +455,11 @@ export default function Home() {
             </Link>
 
             <Link href="/bg-remove" className="group">
-              <div className="h-full glass-premium p-8 rounded-2xl hover-premium flex flex-col justify-between gap-6" style={{ '--glow-color': 'rgba(99,102,241,0.2)' } as React.CSSProperties}>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="h-full glass-premium p-8 rounded-2xl hover-premium glow-card flex flex-col justify-between gap-6" 
+                style={{ '--glow-color': 'rgba(99,102,241,0.2)' } as React.CSSProperties}
+              >
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-2">
                     <div className="w-12 h-12 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-500">

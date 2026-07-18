@@ -32,6 +32,7 @@ export default function ConvertPage() {
   const [step, setStep] = useState(1)
   const [outputFormat, setOutputFormat] = useState('')
   const [converting, setConverting] = useState(false)
+  const [error, setError] = useState('')
   const { tier, hasQuota, recordAction, limits } = useQuota()
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import "./globals.css";
 import Particles from "@/components/Particles";
 import Footer from "@/components/Footer";
 import Script from "next/script";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({

@@ -118,10 +118,12 @@ export default function Home() {
     e.currentTarget.style.setProperty('--mouse-y', `${y}px`)
   }
 
-  if (!mounted) return null
-
   return (
-    <div className={`flex flex-col min-h-screen ${tier === 'PRO' ? 'bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5 dark:from-amber-500/5 dark:to-orange-500/5' : 'bg-transparent'}`}>
+    <div 
+      className={`flex flex-col min-h-screen transition-opacity duration-300 ${!mounted ? 'opacity-0' : 'opacity-100'} ${
+        tier === 'PRO' ? 'bg-gradient-to-br from-amber-500/5 via-transparent to-orange-500/5 dark:from-amber-500/5 dark:to-orange-500/5' : 'bg-transparent'
+      }`}
+    >
 
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 w-full glass-premium border-b border-gray-200/20 px-6 py-3">
